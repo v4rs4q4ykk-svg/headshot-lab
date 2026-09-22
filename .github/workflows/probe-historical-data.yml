@@ -1,0 +1,17 @@
+name: Probe historical CS2 data
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Fetch historical CS2 sample (not live)
+        run: python3 probe_historical_data.py
