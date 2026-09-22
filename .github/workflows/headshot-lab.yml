@@ -1,8 +1,12 @@
-
 name: Headshot Lab
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - "headshot_lab.py"
+      - "tests/**"
+      - ".github/workflows/headshot-lab.yml"
 
 permissions:
   contents: read
@@ -10,10 +14,8 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Test Headshot Lab
-        run: |
-          echo "Headshot Lab is working!"
-          echo "GitHub automation is running."
-          date -u
+      - name: Check out source code
+        uses: actions/checkout@v4
+      - name: Test Headshot Lab calculations
+        run: python3 -m unittest discover -s tests -v
