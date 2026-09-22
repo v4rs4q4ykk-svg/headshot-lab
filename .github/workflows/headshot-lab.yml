@@ -1,0 +1,19 @@
+
+name: Headshot Lab
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Test Headshot Lab
+        run: |
+          echo "Headshot Lab is working!"
+          echo "GitHub automation is running."
+          date -u
