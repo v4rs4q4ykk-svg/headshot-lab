@@ -5,6 +5,7 @@ Failure is visible in Actions; no fake data or fallback to FACEIT stats.
 """
 import json
 from collections import defaultdict
+from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
@@ -19,8 +20,19 @@ QUERY = urlencode({"dataset": DATASET, "config": "default", "split": "train", "o
 def main():
     url = f"{BASE}/rows?{QUERY}"
     req = Request(url, headers={"User-Agent": "HeadshotLab-Research/0.1"})
-    with urlopen(req, timeout=25) as response:
-        payload = json.load(response)
+    try:
+        with urlopen(req, timeout=25) as response:
+            payload = json.load(response)
+    except HTTPError as exc:
+        if exc.code in (401, 403):
+            raise SystemExit(
+                f"DATA SOURCE UNAVAILABLE (HTTP {exc.code}): "
+                "The dataset viewer denied access. This is not a GitHub Actions "
+                "or headshot-calculator error. Do not buy a subscription or "
+                "pretend the missing stats are zero. We need a verified, "
+                "permitted source before enabling live collection."
+            ) from exc
+        raise
     rows = payload.get("rows")
     if not isinstance(rows, list) or not rows:
         raise RuntimeError("dataset viewer did not provide data rows")
