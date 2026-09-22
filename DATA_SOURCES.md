@@ -31,3 +31,20 @@
 
 No live stats/projections connector has been enabled; all green GitHub unit tests
 remain calculation/schema tests on sample data. The project is not yet a live app.
+
+## Source inspection: OldFella/hltv_api (2026-09-22)
+
+- Inspected its public README, `src/routers/matches.py`, and
+  `src/domain/models.py` directly in its GitHub repository.
+- The advertised `/matches/{matchid}/stats?by_map=true` endpoint's
+  `PlayerMatchStats` response model has: id, name, kills (`k`), deaths
+  (`d`), swing, ADR, KAST, rating. **No headshot count is present.**
+- Repository code search also returned no matches for `headshot` or
+  `headshots` on its indexed default branch.
+- Decision: DO NOT connect as Headshot Lab's headshot feed. The existence of
+  per-map *player stats* is not evidence of per-map *headshots*. No additional
+  registration or payment is warranted. The live API's availability has not
+  been tested here because its documented schema already lacks the required
+  field.
+- Upstream code: https://github.com/OldFella/hltv_api/blob/main/src/domain/models.py
+- Upstream endpoint: https://github.com/OldFella/hltv_api/blob/main/src/routers/matches.py
