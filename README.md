@@ -1,28 +1,43 @@
 # Headshot Lab
 
-CS2 headshot-history research app, being built for a $0 recurring budget.
+CS2 headshot-history research tracker with a target recurring cost of $0.
 
-## Current state
+## What works
 
-- GitHub Actions runs the Python unit tests.
-- The calculation engine combines **Maps 1 and 2 only**, uses an exact player ID,
-  excludes incomplete matches, distinguishes over/under/push, and shows
-  "insufficient data" when fewer than 10, 15, or 20 completed matches exist.
-- **There is no live feed, PrizePicks integration, website, or fully automatic
-  tracker yet.** All tests use clearly identified fictional fixture data.
+- GitHub Actions runs Python unit tests.
+- The calculation engine combines **Maps 1 and 2 only**, uses exact player IDs,
+  excludes incomplete matches, distinguishes over/under/push, and reports
+  "insufficient data" if fewer than 10, 15, or 20 completed matches exist.
+- Calculation and replay-schema tests use **fictional fixtures**, not live stats.
+
+## What is blocked or unverified
+
+- **September 22, 2026:** the first attempt to retrieve
+  blanchon/cs2_dataset_demo_test through the Hugging Face dataset-viewer
+  /rows endpoint failed with **HTTP 401 Unauthorized**. Do not infer that
+  the source is freely accessible, and do not purchase anything for it.
+- The source's actual fields, available games, licensing for our use, and
+  current coverage remain **unverified**. replay_dataset.py is a tentative
+  normalization adapter for a proposed event/roster schema, not a verified
+  production importer.
+- We do **not** have a live professional CS2 feed, PrizePicks integration,
+  automated updates, or a completed iPhone dashboard yet. No live-data
+  success should be inferred from green unit-test checks.
+- FACEIT matchmaking results are not interchangeable with the professional
+  tournament matches on the PrizePicks board.
 
 ## Run tests
 
-Run \`python3 -m unittest discover -s tests -v\` in a Python environment,
-or use **Actions → Headshot Lab → Run workflow**.
+Use Actions → Headshot Lab or run:
 
-## Data provider requirement
+    python3 -m unittest discover -s tests -v
 
-An authorized source must supply actual professional match records with:
-\`match_id\`, \`player_id\`, \`played_at\` (time-zone-aware ISO-8601),
-\`map_number\` (1 or 2), \`headshots\` (integer), and \`completed\` (boolean).
+## Source requirements
 
-Historical FACEIT matchmaking stats are **not** assumed to represent the
-professional tournament matches on a PrizePicks board. Do not put tokens in a
-public repository. The collector will be added only after a suitable free
-source and its permitted usage have been verified.
+Before deploying automated collection, independently verify an authorized,
+free source that supplies real completed professional matches with a match ID,
+exact player ID, correct map 1/2 headshot counts and dates, and adequate
+coverage for the players on the board. Check usage terms and freshness.
+
+Do not put API keys or passwords in this public repository. Missing data must
+stay missing, never be replaced with zeros or fabricated stats.
