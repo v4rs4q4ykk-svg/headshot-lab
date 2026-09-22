@@ -17,3 +17,62 @@ jobs:
           echo "Headshot Lab is working!"
           echo "GitHub automation is running."
           date -u
+
+name: Headshot Lab
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run CS2 Headshot Calculator
+        run: |
+          python3 - <<'PY'
+          print("HEADSHOT LAB")
+          print("--------------------")
+
+          # Example headshots for Map 1 and Map 2
+          matches = [
+              (9, 10),
+              (8, 7),
+              (12, 11),
+              (10, 9),
+              (6, 8),
+              (11, 12),
+              (9, 10),
+              (7, 9),
+              (13, 10),
+              (8, 12)
+          ]
+
+          projection = 17.5
+
+          totals = [
+              map1 + map2
+              for map1, map2 in matches
+          ]
+
+          overs = sum(
+              total > projection
+              for total in totals
+          )
+
+          average = sum(totals) / len(totals)
+          over_rate = overs / len(totals) * 100
+
+          print("PrizePicks line:", projection)
+          print("Last 10 matches:", totals)
+          print("Average headshots:", average)
+          print("Times over:", overs)
+          print("Over percentage:", over_rate)
+
+          assert len(totals) == 10
+          assert overs == 7
+          print("CALCULATION TEST PASSED")
+          PY
