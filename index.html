@@ -330,7 +330,7 @@
         }
         if(!res.ok)throw Error("HTTP "+res.status);
         const data=await res.json();
-        if(data.kind!=="on_demand_user_research_not_live"||data.bo3_player_id!==p.id||
+        if(!["on_demand_user_research_not_live","cs2_player_research"].includes(data.kind)||data.bo3_player_id!==p.id||
            data.nickname?.toLocaleLowerCase()!==p.name.toLocaleLowerCase()||
            !Array.isArray(data.matches))throw Error("Saved research identity mismatch");
         let records=data.matches;
