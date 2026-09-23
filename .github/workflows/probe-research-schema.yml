@@ -1,0 +1,32 @@
+name: Check CS2 matchup source fields
+on:
+  push:
+    paths: [".github/workflows/probe-research-schema.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect bounded public source responses
+        run: |
+          python3 - <<'PY'
+          import json
+          from fetch_player_history import get,rows
+          candidates=rows(get("/matches",{"scope":"widget-matches","page[limit]":1,"sort":"-start_date","filter[matches.status][in]":"finished","filter[matches.player_ids][overlap]":"17729","filter[matches.discipline_id][eq]":1,"with":"teams,games,match_maps"}))
+          m=get("/matches/"+candidates[0]["slug"],{"with":"teams,games,match_maps"})
+          print("VETO",json.dumps(m.get("match_maps"))[:8000])
+          print("GAME",json.dumps((m.get("games") or [])[:1])[:3000])
+          g=(m.get("games") or [])[0]
+          stats=rows(get("/games/"+str(g["id"])+"/players_stats"))
+          print("STAT",json.dumps(stats[0] if stats else {})[:5000])
+          ps=rows(get("/filters/players",{"search_text":"chelo","page[limit]":3,"filter[discipline_id][eq]":1}))
+          print("PLAYER",json.dumps(ps)[:3500])
+          ups=rows(get("/matches",{"scope":"widget-matches","page[limit]":3,"sort":"start_date","filter[matches.status][in]":"upcoming,current","filter[matches.team_ids][overlap]":"1430","filter[matches.discipline_id][eq]":1,"with":"teams,games,match_maps"}))
+          print("UPCOMING",json.dumps([{"id":x.get("id"),"slug":x.get("slug"),"start_date":x.get("start_date"),"status":x.get("status"),"team1_id":x.get("team1_id"),"team2_id":x.get("team2_id"),"bo_type":x.get("bo_type"),"maps":x.get("match_maps")} for x in ups])[:5000])
+          tm=rows(get("/matches",{"scope":"widget-map-pool","page[limit]":2,"sort":"-start_date","filter[matches.status][in]":"finished","filter[matches.team_ids][overlap]":"1430","filter[matches.discipline_id][eq]":1,"with":"teams,games,match_maps"}))
+          print("TEAM_HISTORY",json.dumps([{"id":x.get("id"),"keys":list(x),"maps":x.get("match_maps")} for x in tm])[:8000])
+          PY
