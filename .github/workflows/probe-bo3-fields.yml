@@ -1,0 +1,20 @@
+name: Probe BO3 headshot fields
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "probe_bo3_fields.py"
+      - ".github/workflows/probe-bo3-fields.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  one_shot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check public BO3 data fields without impersonation or bypass
+        run: python3 probe_bo3_fields.py
