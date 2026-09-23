@@ -249,9 +249,11 @@
       const update=()=>{
         const a=maps.get(first.value),b=maps.get(second.value);
         if(!a||!b||a===b){scenario.textContent="Choose two different maps to see a historical map-pair average.";return;}
-        scenario.textContent="On these saved maps: "+((a.hs/a.count)+(b.hs/b.count)).toFixed(2)+
+        const pair=(a.hs/a.count)+(b.hs/b.count);
+        const overall=records.reduce((n,m)=>n+m.headshots,0)/records.length;
+        scenario.textContent="On these saved maps: "+pair.toFixed(2)+
           " combined HS ("+a.name+" n="+a.count+"; "+b.name+" n="+b.count+
-          "). This adds separate historical map averages, not a forecast. Map order, opponent, roster and veto are unverified.";
+          "), compared with "+overall.toFixed(2)+" across these saved series. This adds separate historical map averages, not a forecast. Map order, opponent, roster and veto are unverified.";
       };
       first.addEventListener("change",update);second.addEventListener("change",update);update();
       section.append(controls,scenario);details.append(section);
@@ -362,6 +364,34 @@
           tbody.append(row);
         }
         table.append(tbody);details.append(table);
+        const lineLabel=document.createElement("label");lineLabel.className="muted";
+        lineLabel.textContent="Projection line (enter the current value yourself)";
+        const lineInput=document.createElement("input");lineInput.type="number";
+        lineInput.min="0";lineInput.max="200";lineInput.step="0.5";
+        lineInput.placeholder="e.g. 14.5";lineInput.setAttribute("aria-label","Manual projection line for "+p.name);
+        const compare=document.createElement("button");compare.type="button";compare.className="button";
+        compare.textContent="Compare saved history";
+        const comparison=document.createElement("div");comparison.className="manual-result";
+        compare.addEventListener("click",()=>{
+          comparison.replaceChildren();
+          try{
+            const results=calculateManual(lineInput.value,records.map(m=>m.headshots).join("\n"));
+            const note=document.createElement("p");note.className="muted";
+            note.textContent="Against the line you entered · historical saved series only, not an outcome forecast.";
+            comparison.append(note);
+            const table=document.createElement("table"),thead=document.createElement("thead"),tr=document.createElement("tr");
+            for(const name of ["Window","Avg HS","Over","Under","Push"]){const th=document.createElement("th");th.textContent=name;tr.append(th);}
+            thead.append(tr);table.append(thead);const tbody=document.createElement("tbody");
+            for(const r of results){const row=document.createElement("tr");
+              const values=r.complete?["L"+r.window,r.average.toFixed(2),r.over,r.under,r.push]:
+                ["L"+r.window,"Insufficient ("+r.available+"/"+r.window+")","—","—","—"];
+              for(const value of values){const td=document.createElement("td");td.textContent=String(value);row.append(td);}
+              tbody.append(row);
+            }
+            table.append(tbody);comparison.append(table);
+          }catch(e){const error=document.createElement("p");error.className="error";error.textContent=e.message;comparison.append(error);}
+        });
+        details.append(lineLabel,lineInput,compare,comparison);
         appendMatchupResearch(details,records);
         for(const m of records){
           const line=document.createElement("p");line.className="muted";
