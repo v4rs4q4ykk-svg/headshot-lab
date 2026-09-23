@@ -1,0 +1,16 @@
+name: Probe BO3 player index size
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "probe_bo3_index.py"
+      - ".github/workflows/probe-bo3-index.yml"
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 probe_bo3_index.py
