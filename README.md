@@ -58,3 +58,29 @@ A CS2 headshot-history research dashboard with a target recurring cost of $0.
 - Never put API keys in this public repository or display missing stats as zero.
 
 See [DATA_SOURCES.md](DATA_SOURCES.md) for sources considered and rejected.
+
+## Search and per-player research connection
+
+The **BO3.gg identity index** is published at `data/bo3_players.json`;
+its first completed run indexed **15,561 unique valid names/IDs** from a
+source-reported 20,508. BO3's paginated source overlapped, so the index
+explicitly sets `complete=false`; it is not a claim to include every player.
+The GitHub Pages player-search UI reads this local index. BO3 returned no
+CORS allowance for the Pages origin, so the browser cannot call BO3 directly.
+
+A separate **bounded, user-initiated research bridge** is connected through
+GitHub issues: search a listed nickname, press "Check headshot history",
+then submit the prefilled GitHub request using the connected repo owner
+account. An Actions job collects that specific player's available complete
+Map 1+2 series and publishes `data/player_histories/<BO3_ID>.json`.
+It is free, may take a few minutes, and is not instant or automatic
+when merely typing a player nickname. Any missing/ambiguous records stay
+missing, not zero-filled. The first test issue, #2, completed successfully:
+https://github.com/v4rs4q4ykk-svg/headshot-lab/actions/runs/35872077782
+
+The older data and the on-demand research do NOT imply a current PrizePicks
+projection connection, full last-20 game coverage, automated refresh of every
+player, or redistribution rights granted by the data suppliers. PrizePicks'
+August 2026 terms prohibit robotic access to its Site/App (section 16(l));
+therefore the undocumented, previously accessible endpoint is not installed
+as a scheduled collector.
