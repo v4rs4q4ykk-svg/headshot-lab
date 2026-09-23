@@ -5,7 +5,7 @@
   "bo3_profile_id": "354",
   "nickname": "chelo",
   "source": "BO3.gg public per-game player stats (research access; reuse rights unverified)",
-  "retrieved_at": "2026-09-23T14:36:33.568705+00:00",
+  "retrieved_at": "2026-09-23T14:40:46.354215+00:00",
   "candidates_checked": 40,
   "excluded_checked": 6,
   "matches": [
@@ -13,7 +13,10 @@
       "id": 129902,
       "played_at": "2026-09-19T01:00:00.000+00:00",
       "team": "Imperial",
-      "opponent": null,
+      "opponent": {
+        "id": 5701,
+        "name": "BESTIA"
+      },
       "maps": [
         {
           "name": "de_mirage",
@@ -32,7 +35,10 @@
       "id": 129885,
       "played_at": "2026-09-17T00:55:00.000+00:00",
       "team": "Imperial",
-      "opponent": null,
+      "opponent": {
+        "id": 6282,
+        "name": "Bounty Hunters"
+      },
       "maps": [
         {
           "name": "de_mirage",
@@ -51,7 +57,10 @@
       "id": 127570,
       "played_at": "2026-09-06T15:00:00.000+00:00",
       "team": "Imperial",
-      "opponent": null,
+      "opponent": {
+        "id": 6282,
+        "name": "Bounty Hunters"
+      },
       "maps": [
         {
           "name": "de_mirage",
@@ -70,7 +79,10 @@
       "id": 127568,
       "played_at": "2026-09-05T19:00:00.000+00:00",
       "team": "Imperial",
-      "opponent": null,
+      "opponent": {
+        "id": 25189,
+        "name": "Peladona"
+      },
       "maps": [
         {
           "name": "de_dust2",
@@ -89,7 +101,10 @@
       "id": 127564,
       "played_at": "2026-09-03T13:00:00.000+00:00",
       "team": "Imperial",
-      "opponent": null,
+      "opponent": {
+        "id": 18461,
+        "name": "BESTIA Academy"
+      },
       "maps": [
         {
           "name": "de_mirage",
@@ -108,7 +123,10 @@
       "id": 127761,
       "played_at": "2026-09-01T21:00:00.000+00:00",
       "team": "Imperial",
-      "opponent": null,
+      "opponent": {
+        "id": 10049,
+        "name": "Galorys"
+      },
       "maps": [
         {
           "name": "de_anubis",
@@ -127,7 +145,10 @@
       "id": 127760,
       "played_at": "2026-08-31T21:00:00.000+00:00",
       "team": "Imperial",
-      "opponent": null,
+      "opponent": {
+        "id": 11174,
+        "name": "ShindeN"
+      },
       "maps": [
         {
           "name": "de_dust2",
@@ -146,7 +167,10 @@
       "id": 127759,
       "played_at": "2026-08-30T21:00:00.000+00:00",
       "team": "Imperial",
-      "opponent": null,
+      "opponent": {
+        "id": 10049,
+        "name": "Galorys"
+      },
       "maps": [
         {
           "name": "de_anubis",
@@ -165,7 +189,10 @@
       "id": 127754,
       "played_at": "2026-08-28T21:10:00.000+00:00",
       "team": "Imperial",
-      "opponent": null,
+      "opponent": {
+        "id": 11174,
+        "name": "ShindeN"
+      },
       "maps": [
         {
           "name": "de_inferno",
@@ -184,7 +211,10 @@
       "id": 127744,
       "played_at": "2026-08-26T21:00:00.000+00:00",
       "team": "Imperial",
-      "opponent": null,
+      "opponent": {
+        "id": 3370,
+        "name": "ODDIK"
+      },
       "maps": [
         {
           "name": "de_dust2",
@@ -203,7 +233,10 @@
       "id": 127732,
       "played_at": "2026-08-25T21:00:00.000+00:00",
       "team": "Imperial",
-      "opponent": null,
+      "opponent": {
+        "id": 3838,
+        "name": "paiN Academy"
+      },
       "maps": [
         {
           "name": "de_mirage",
@@ -222,7 +255,10 @@
       "id": 125928,
       "played_at": "2026-08-16T17:00:00.000+00:00",
       "team": "Gamdom Imperial",
-      "opponent": null,
+      "opponent": {
+        "id": 778,
+        "name": "Keyd Stars"
+      },
       "maps": [
         {
           "name": "de_mirage",
@@ -241,7 +277,10 @@
       "id": 127201,
       "played_at": "2026-08-15T20:15:00.000+00:00",
       "team": "Gamdom Imperial",
-      "opponent": null,
+      "opponent": {
+        "id": 5701,
+        "name": "BESTIA"
+      },
       "maps": [
         {
           "name": "de_nuke",
@@ -260,7 +299,10 @@
       "id": 125922,
       "played_at": "2026-08-13T23:15:00.000+00:00",
       "team": "Gamdom Imperial",
-      "opponent": null,
+      "opponent": {
+        "id": 591,
+        "name": "Isurus"
+      },
       "maps": [
         {
           "name": "de_cache",
@@ -279,7 +321,10 @@
       "id": 125908,
       "played_at": "2026-08-07T23:00:00.000+00:00",
       "team": "Imperial",
-      "opponent": null,
+      "opponent": {
+        "id": 10049,
+        "name": "Galorys"
+      },
       "maps": [
         {
           "name": "de_nuke",
@@ -298,7 +343,10 @@
       "id": 125899,
       "played_at": "2026-08-05T20:43:17.000+00:00",
       "team": "Imperial",
-      "opponent": null,
+      "opponent": {
+        "id": 23043,
+        "name": "ALKA"
+      },
       "maps": [
         {
           "name": "de_dust2",
@@ -317,7 +365,10 @@
       "id": 125891,
       "played_at": "2026-08-03T20:10:00.000+00:00",
       "team": "Imperial",
-      "opponent": null,
+      "opponent": {
+        "id": 898,
+        "name": "Procyon"
+      },
       "maps": [
         {
           "name": "de_mirage",
@@ -336,7 +387,10 @@
       "id": 125187,
       "played_at": "2026-07-31T18:05:00.000+00:00",
       "team": "Imperial",
-      "opponent": null,
+      "opponent": {
+        "id": 3661,
+        "name": "Fluxo"
+      },
       "maps": [
         {
           "name": "de_dust2",
@@ -355,7 +409,10 @@
       "id": 125185,
       "played_at": "2026-07-30T18:00:00.000+00:00",
       "team": "Imperial",
-      "opponent": null,
+      "opponent": {
+        "id": 11174,
+        "name": "ShindeN"
+      },
       "maps": [
         {
           "name": "de_mirage",
@@ -374,7 +431,10 @@
       "id": 125181,
       "played_at": "2026-07-28T21:20:00.000+00:00",
       "team": "Imperial",
-      "opponent": null,
+      "opponent": {
+        "id": 5701,
+        "name": "BESTIA"
+      },
       "maps": [
         {
           "name": "de_inferno",
