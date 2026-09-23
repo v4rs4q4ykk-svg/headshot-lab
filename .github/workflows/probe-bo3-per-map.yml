@@ -1,0 +1,20 @@
+name: Check BO3 exact per-map headshots
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "probe_bo3_per_map.py"
+      - ".github/workflows/probe-bo3-per-map.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  exact_headshots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check one finished match from public per-game player stats API
+        run: python3 probe_bo3_per_map.py
