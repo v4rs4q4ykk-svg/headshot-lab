@@ -1,6 +1,7 @@
 name: Research requested CS2 player
 
 on:
+  workflow_dispatch:
   issues:
     types: [opened]
 
