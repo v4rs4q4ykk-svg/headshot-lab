@@ -1,96 +1,90 @@
 # Headshot Lab
 
-A CS2 headshot-history research dashboard with a target recurring cost of $0.
+CS2 player, opponent and map research with a target recurring cost of $0.
 
-## Available now
+**App:** https://v4rs4q4ykk-svg.github.io/headshot-lab/
 
-- **iPhone dashboard:** https://v4rs4q4ykk-svg.github.io/headshot-lab/
-- Python engine calculates completed Maps 1+2 headshots with exact player IDs,
-  excludes partial matches and distinguishes over/under/push.
-- GitHub Actions calculation tests.
-- **Verified phoebe research example:** A bounded BO3.gg per-map test returned
-  20 complete available Maps 1+2 CS2 series with exact integer headshot
-  counts. The dashboard now displays phoebe's L10/L15/L20 averages,
-  over/under/push against a **saved** 14-headshot screenshot line, and
-  20 dated per-map totals. Five other match candidates were excluded;
-  these are NOT necessarily her last 20 matches played.
-  See [the verified research run](https://github.com/v4rs4q4ykk-svg/headshot-lab/actions/runs/35810256579).
-- **PrizePicks access proof:** A one-time public endpoint test retrieved CS2
-  headshot markets, including phoebe's saved 14 line. This does not establish
-  licensed/authorized continuous access or fresh availability.
+## Use it
 
-- **Real historical research sample:** The public
-  [blanchon/opencs2_dataset_demo](https://huggingface.co/datasets/blanchon/opencs2_dataset_demo)
-  dataset successfully returned an older sample. A bounded collector validates
-  complete Maps 1+2 results and saves them to `data/archive.json`.
-- The dashboard displays these old match results in a **separate historical
-  archive**, with original-match links, source attribution and clear dates.
-  This sample is **not** a source of current player performance.
+1. Search a nickname and select the correct source identity.
+2. Saved research opens immediately. For a missing player, use **Open collection
+   request**, submit the prefilled GitHub issue with the repository owner account,
+   and return to the app. The result loads automatically.
+3. Enter the current Maps 1–2 headshot line from PrizePicks. Lines remain on your
+   device; they are not fetched or published automatically.
+4. Choose an upcoming match, inspect the opponent history and map splits, or test
+   a map combination. The research board compares collected players against the
+   individual lines you enter.
 
-## Not finished / do not misrepresent
+## Data pipeline
 
-- **The BO3.gg per-game endpoint returned exact map headshots in a bounded test,
-  but an authorized recurring full-board collection/feed is NOT connected.**
-- **One-time PrizePicks endpoint access worked; an authorized recurring live
-  projection feed is NOT connected.**
-- The older archive is from April 2026; the separate phoebe research sample
-  covers October 2025–August 2026 and must not be mislabeled live/current.
-  Neither is full-board, updated September player coverage.
-- The app is NOT a completed fully automatic current-day PrizePicks tracker.
-  Source permission, coverage and freshness must be established before enabling
-  a current feed.
-- A `401 Unauthorized` on an older, incorrectly named sample source led to
-  a corrected dataset ID, which the bounded probe and sample publisher have
-  now accessed successfully. The fact a HISTORICAL source works does not mean
-  live access works.
-- Tournament organizers' terms may apply to underlying demo material.
-  Archive is for attributed personal research; investigate rights before
-  redistribution or commercial use.
+`research_pipeline.py` uses BO3.gg's public JSON endpoints. It matches players by
+`steam_profile.player_id` and the nested player ID, which supports changed
+in-game nicknames without conflating players with the same name. A result needs
+both completed Maps 1 and 2 with consistent player/team identity and integer
+headshot counts. Missing records are excluded and counted in coverage metadata.
+Map 3 is excluded from headshot totals.
 
-## Tests and maintenance
+Each fetched map also supplies the other players in that match. Those peer
+records are cached with **partial coverage** until a direct player scan is run.
+A source lookup can resolve a nickname absent from the local identity index;
+duplicate nicknames require selecting an ID. The source itself can still lack
+players or matches.
 
-- **Actions → Headshot Lab** runs the unit tests.
-- **Actions → Probe historical CS2 data** checks a bounded source sample.
-- **Actions → Publish historical CS2 sample** refreshes the bounded archived
-  research sample on demand or when its collector code changes.
-- Source is historical; do not schedule that collector as if it creates
-  updated current match results.
-- Never put API keys in this public repository or display missing stats as zero.
+The collector also stores the upcoming team fixtures and recent ordered BO3
+picks/bans. Requests are serial, paginated and capped. Completed match responses
+are cached for one day; team veto samples for two hours. Authorization and rate
+limit errors stop source requests. There is no Cloudflare bypass or proxy.
 
-See [DATA_SOURCES.md](DATA_SOURCES.md) for sources considered and rejected.
+GitHub Actions refreshes up to four directly requested profiles every six hours,
+oldest first. Scheduled jobs can be delayed by GitHub. The app shows collection
+times. This is periodically refreshed research, not a real-time headshot feed.
 
-## Search and per-player research connection
+## Map model
 
-The **BO3.gg identity index** is published at `data/bo3_players.json`;
-its first completed run indexed **15,561 unique valid names/IDs** from a
-source-reported 20,508. BO3's paginated source overlapped, so the index
-explicitly sets `complete=false`; it is not a claim to include every player.
-The GitHub Pages player-search UI reads this local index. BO3 returned no
-CORS allowance for the Pages origin, so the browser cannot call BO3 directly.
+Confirmed source maps override estimates. Otherwise `analysis.js` models the
+first two bans and two picks in a BO3 using recent team tendencies, a 60-day
+half-life, additive smoothing of 0.5, and equal weight for either acting order.
+It enumerates the possible paths and reports the distribution for Maps 1 and 2.
 
-A separate **bounded, user-initiated research bridge** is connected through
-GitHub issues: search a listed nickname, press "Check headshot history",
-then submit the prefilled GitHub request using the connected repo owner
-account. An Actions job collects that specific player's available complete
-Map 1+2 series and publishes `data/player_histories/<BO3_ID>.json`.
-It is free, may take a few minutes, and is not instant or automatic
-when merely typing a player nickname. Any missing/ambiguous records stay
-missing, not zero-filled. The first test issue, #2, completed successfully:
-https://github.com/v4rs4q4ykk-svg/headshot-lab/actions/runs/35872077782
+Requirements: at least five complete standard BO3 vetoes for each team using the
+same seven-map pool, and latest vetoes no older than 30 days. The pool is inferred
+from the latest complete vetoes; it is not verification of tournament rules.
+Different or stale pools and inadequate samples produce an unavailable result.
 
-The older data and the on-demand research do NOT imply a current PrizePicks
-projection connection, full last-20 game coverage, automated refresh of every
-player, or redistribution rights granted by the data suppliers. PrizePicks'
-August 2026 terms prohibit robotic access to its Site/App (section 16(l));
-therefore the undocumented, previously accessible endpoint is not installed
-as a scheduled collector.
+The map-weighted headshot baseline combines the model's map weights with player
+HS/round and typical map lengths. Five map-equivalents of shrinkage toward the
+player's overall HS rate reduce the effect of small samples. Missing map samples
+use the overall rate and their model weight is disclosed. These estimates have
+not been calibrated or backtested. Roster changes and roles are not modeled;
+historical hit rates are not outcome probabilities.
 
-Requested player records now also save the two actual map names, played rounds,
-and the opponent's source team ID when those fields are unambiguous. The player
-card shows head-to-head results against a selected organization, per-map HS and
-HS/round, and a user-selected two-map historical scenario. It does not infer
-which maps will be picked: that needs an independently verified veto/pick feed.
-Older saved records need a new on-demand research request for these fields.
-Team history does not account for roster changes, and individual map averages
-added together are not an outcome prediction. No automatic leaderboard or live
-headshot view is connected.
+## Coverage limits
+
+- A direct scan checks up to 60 newest finished candidates for 20 complete
+  available series. It may skip matches with absent data or only one map.
+- Head-to-head and map splits use the saved records, not an exhaustive career
+  database. Source team IDs distinguish organizations; current roster equality
+  is not implied.
+- The player identity index is partial. A missing nickname can be searched at the
+  source through the collection request flow, but all-player availability cannot
+  be guaranteed.
+- New collection requires the repository owner's GitHub account to submit the
+  request. A static GitHub Pages site cannot securely start privileged Actions
+  jobs on its own without an authentication service.
+- No automatic PrizePicks projection feed or in-match headshot feed is connected.
+- The public source has no availability guarantee for this app. No API keys or
+  user credentials are stored in the page or repository.
+
+## Verification
+
+- `python3 -m unittest discover -s tests -v` checks source identity, missing data,
+  complete-map aggregation, safe requests and calculation contracts.
+- `node --test tests/test_analysis.cjs` checks veto probability normalization,
+  confirmed-map precedence, stale/mismatched pools, missing samples and pushes.
+- `tests/browser.cjs` checks player lookup, line comparison, opponent filters,
+  mobile/desktop width, and the automatic request-result flow in Chromium.
+  The **Check CS2 research interface** Action saves screenshots.
+
+Older experiments and screenshots remain under `data/` and `DATA_SOURCES.md` for
+provenance. They are not used as current projection lines in the research view.

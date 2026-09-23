@@ -310,3 +310,21 @@ Remaining hurdles for full requested product:
   with reliable nickname/team/external IDs, data freshness,
   missing-map handling, and cost/quota monitoring. Do not attempt
   thousands of requests per run or promise full-board coverage.
+
+## September 23: integrated CS2 research pipeline
+
+Live public responses confirmed that per-game `steam_profile.player_id` and
+`steam_profile.player.id` identify players independently of the in-game nickname.
+`team_clan.team_id` provides the team identity. `match_maps` contains ordered
+pick/ban records: the verified standard BO3 sequence uses numeric types
+2,2,1,1,2,2,3 (ban,ban,pick,pick,ban,ban,decider), and its picks agree with the
+played Maps 1 and 2. The pipeline rejects nonstandard or incomplete vetoes for
+model training. Upcoming fixtures use the source team ID.
+
+The public-source research pipeline now runs on owner requests and a bounded
+six-hour schedule. It caches shared completed matches, retains peer records with
+partial-coverage labels, and has an internal experimental veto model. Previous
+notes describing a required external predictor or manual rechecking of every
+request are superseded by this implementation. Public access is not a claim of
+an official supplier relationship or source uptime guarantee. PrizePicks lines
+remain manually entered. See README.md for the current model and limits.

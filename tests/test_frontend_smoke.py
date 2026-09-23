@@ -22,26 +22,20 @@ class FrontendSmokeTests(unittest.TestCase):
         self.assertEqual(phoebe[0]["line"], 14)
         self.assertEqual(phoebe[0]["hl_tv_player_id"], 23613)
 
-    def test_frontend_contains_separate_snapshot_and_live_sections(self):
+    def test_frontend_discloses_manual_lines_and_refresh(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
-        self.assertIn('id="board-search"', html)
-        self.assertIn('id="board-players"', html)
-        self.assertIn('id="search"', html)
-        self.assertIn("manually_captured_board_snapshot", html)
-        self.assertIn("NO LIVE FEED", html)
+        self.assertIn('id="projection"', html)
+        self.assertIn('id="fixture-select"', html)
+        self.assertIn("PrizePicks lines are entered manually", html)
+        self.assertIn("every six hours", html)
 
-    @unittest.skipUnless(shutil.which("node"), "node unavailable for JS syntax test")
-    def test_inline_javascript_syntax(self):
-        html = (ROOT / "index.html").read_text(encoding="utf-8")
-        scripts = re.findall(r"<script\b[^>]*>(.*?)</script\s*>", html, flags=re.I | re.S)
-        self.assertTrue(scripts, "expected an inline dashboard script")
-        for script in scripts:
-            with tempfile.NamedTemporaryFile("w", suffix=".js", encoding="utf-8") as temp:
-                temp.write(script)
-                temp.flush()
-                result = subprocess.run(["node", "--check", temp.name],
-                                        capture_output=True, text=True, check=False)
-                self.assertEqual(result.returncode, 0, result.stderr)
+    @unittest.skipUnless(shutil.which("node"), "node unavailable for JS validation")
+    def test_javascript_and_calculation_contracts(self):
+        for filename in ("app.js", "analysis.js"):
+            result = subprocess.run(["node", "--check", str(ROOT / filename)], capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+        result = subprocess.run(["node", "--test", str(ROOT / "tests/test_analysis.cjs")], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
 
 if __name__ == "__main__":
