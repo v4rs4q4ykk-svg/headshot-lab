@@ -84,3 +84,13 @@ player, or redistribution rights granted by the data suppliers. PrizePicks'
 August 2026 terms prohibit robotic access to its Site/App (section 16(l));
 therefore the undocumented, previously accessible endpoint is not installed
 as a scheduled collector.
+
+Requested player records now also save the two actual map names, played rounds,
+and the opponent's source team ID when those fields are unambiguous. The player
+card shows head-to-head results against a selected organization, per-map HS and
+HS/round, and a user-selected two-map historical scenario. It does not infer
+which maps will be picked: that needs an independently verified veto/pick feed.
+Older saved records need a new on-demand research request for these fields.
+Team history does not account for roster changes, and individual map averages
+added together are not an outcome prediction. No automatic leaderboard or live
+headshot view is connected.

@@ -73,6 +73,34 @@ def fetch_player(ident, sleep=time.sleep):
     # and manually verify name in that case, but never accept another ID.
     return exact[0] if len(exact) == 1 else None
 
+def team_identity(entry):
+    """Use only a named team with an unambiguous source ID."""
+    if not isinstance(entry, dict):
+        return None
+    value = entry.get("team") if isinstance(entry.get("team"), dict) else entry
+    ident = value.get("id")
+    name = value.get("name")
+    if type(ident) is not int or ident <= 0 or not isinstance(name, str) or not name.strip():
+        return None
+    return {"id": ident, "name": name.strip()}
+
+def opponent_identity(match, player_team):
+    teams = match.get("teams")
+    if not isinstance(teams, list) or len(teams) != 2 or not isinstance(player_team, str):
+        return None
+    identities = [team_identity(t) for t in teams]
+    if any(t is None for t in identities) or identities[0]["id"] == identities[1]["id"]:
+        return None
+    own = [t for t in identities if t["name"].casefold() == player_team.strip().casefold()]
+    other = [t for t in identities if t["name"].casefold() != player_team.strip().casefold()]
+    return other[0] if len(own) == len(other) == 1 else None
+
+def map_identity(game):
+    name = game.get("map_name")
+    if not isinstance(name, str) or not re.fullmatch(r"[A-Za-z0-9 _-]{2,60}", name.strip()):
+        return None
+    return name.strip()
+
 def collect(ident, nickname):
     if not isinstance(nickname, str) or not nickname.strip() or len(nickname)>90:
         raise ValueError("A bounded, exact player nickname is required")
@@ -100,7 +128,7 @@ def collect(ident, nickname):
             excluded += 1
             continue
         time.sleep(WAIT)
-        match = get("/matches/"+slug, {"with":"games"})
+        match = get("/matches/"+slug, {"with":"teams,games"})
         if not isinstance(match,dict) or match.get("game_version") not in (2,"2") or match.get("status")!="finished":
             excluded += 1
             continue
@@ -146,11 +174,15 @@ def collect(ident, nickname):
         if not isinstance(date,str) or not date:
             excluded+=1
             continue
+        opponent = opponent_identity(match, map_stats[0][2])
         results.append({"id":match.get("id"),"played_at":date,"team":map_stats[0][2],
+                        "opponent":opponent,
+                        "maps":[{"name":map_identity(games[n]),"rounds":games[n]["rounds_count"]}
+                                for n in (1,2)],
                         "map1":map_stats[0][1],"map2":map_stats[1][1],
                         "headshots":map_stats[0][1]+map_stats[1][1]})
     results.sort(key=lambda r:r["played_at"],reverse=True)
-    return {"schema_version":1,"kind":"on_demand_user_research_not_live",
+    return {"schema_version":2,"kind":"on_demand_user_research_not_live",
         "bo3_player_id":ident,"bo3_profile_id":profile_id,"nickname":nickname,
         "source":"BO3.gg public per-game player stats (research access; reuse rights unverified)",
         "retrieved_at":datetime.now(timezone.utc).isoformat(),

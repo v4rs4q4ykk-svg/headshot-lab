@@ -54,6 +54,8 @@
     .manual-result {margin:12px 0 4px;}
     .manual-result table {width:100%;border-collapse:collapse;font-size:.85rem;}
     .manual-result th,.manual-result td {padding:10px 6px;text-align:left;border-bottom:1px solid #30384a;}
+    select {width:100%;background:#0d1017;border:1px solid #414b60;color:white;border-radius:10px;padding:12px;font-size:1rem;margin:5px 0 12px;}
+    .analysis-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:10px;}
     .error {color:#ffbdc2;font-weight:600;}
   </style>
 </head>
@@ -82,7 +84,7 @@
       <label for="all-search" class="muted">Search any CS2 player nickname</label>
       <input id="all-search" type="search" placeholder="e.g. phoebe, ZywOo, NiKo" autocomplete="off" spellcheck="false">
       <div id="all-player-results" class="empty" aria-live="polite">Loading…</div>
-      <p class="muted">This searches BO3.gg's player index, not the complete PrizePicks board. A name match is NOT a verified current team or available headshot history. Profiles with the same nickname have different IDs. Requesting missing history opens a GitHub issue and requires you to submit it; this is not instant.</p>
+      <p class="muted">This searches BO3.gg's partial player index, not the complete PrizePicks board. A name match is NOT a verified current team or available headshot history. Profiles with the same nickname have different IDs. Requesting missing history opens a GitHub issue and requires you to submit it; this is not instant.</p>
     </section>
 
     <section class="panel warning" id="notice" role="status">
@@ -185,6 +187,75 @@
     // A search hit without verified map records is NOT a stats hit.
     let allIndexedPlayers=null;
     let indexedAt="";
+    function appendMatchupResearch(details, records){
+      const section=document.createElement("section");section.className="manual-result";
+      const heading=document.createElement("h4");heading.textContent="Opponent and map research";section.append(heading);
+      const intro=document.createElement("p");intro.className="muted";
+      intro.textContent="Based on these saved series only. Pick an opponent to inspect previous meetings. A map pairing is your scenario, not a predicted veto.";
+      section.append(intro);
+      const opponents=new Map();
+      for(const m of records){
+        if(m.opponent && Number.isSafeInteger(m.opponent.id) && m.opponent.id>0 &&
+           typeof m.opponent.name==="string" && m.opponent.name.trim())
+          opponents.set(m.opponent.id,m.opponent.name);
+      }
+      const label=document.createElement("label");label.className="muted";label.textContent="Previous opponent";
+      const choice=document.createElement("select");choice.setAttribute("aria-label","Previous opponent");
+      choice.add(new Option("Choose a team", ""));
+      for(const [id,name] of [...opponents].sort((a,b)=>a[1].localeCompare(b[1]))) choice.add(new Option(name,String(id)));
+      const h2h=document.createElement("p");h2h.className="muted";
+      choice.addEventListener("change",()=>{
+        const sample=records.filter(m=>m.opponent?.id===Number(choice.value));
+        if(!choice.value){h2h.textContent="";return;}
+        const sum=sample.reduce((n,m)=>n+m.headshots,0);
+        h2h.textContent=sample.length+" saved meeting"+(sample.length===1?"":"s")+
+          " · "+(sum/sample.length).toFixed(2)+" HS average · "+
+          sample.map(m=>String(m.played_at).slice(0,10)+" ("+m.headshots+" HS)").join(" · ")+
+          ". This is team history; roster changes are not accounted for.";
+      });
+      section.append(label,choice,h2h);
+      if(!opponents.size){h2h.textContent="Opponent IDs unavailable in these saved records.";choice.disabled=true;}
+      const maps=new Map();
+      for(const m of records){
+        for(let i=0;i<2;i++){
+          const info=m.maps?.[i],name=info?.name;
+          if(typeof name!=="string" || !name.trim() ||
+             !Number.isSafeInteger(info.rounds) || info.rounds<=0)continue;
+          const key=name.trim().toLocaleLowerCase();
+          if(!maps.has(key))maps.set(key,{name:name.trim(),hs:0,rounds:0,count:0});
+          const item=maps.get(key);item.hs+=m["map"+(i+1)];item.rounds+=info.rounds;item.count++;
+        }
+      }
+      const mapTitle=document.createElement("h4");mapTitle.textContent="Map splits";section.append(mapTitle);
+      if(!maps.size){const msg=document.createElement("p");msg.className="muted";msg.textContent="Map names and rounds are unavailable in these saved records.";section.append(msg);details.append(section);return;}
+      const table=document.createElement("table"),head=document.createElement("thead"),tr=document.createElement("tr");
+      for(const name of ["Map","Played","Avg HS","HS / round"]){const th=document.createElement("th");th.textContent=name;tr.append(th);}
+      head.append(tr);table.append(head);const body=document.createElement("tbody");
+      const choices=[...maps.values()].sort((a,b)=>a.name.localeCompare(b.name));
+      for(const m of choices){const row=document.createElement("tr");
+        for(const value of [m.name,m.count,(m.hs/m.count).toFixed(2),(m.hs/m.rounds).toFixed(3)]){
+          const td=document.createElement("td");td.textContent=String(value);row.append(td);
+        }body.append(row);
+      }
+      table.append(body);section.append(table);
+      const controls=document.createElement("div");controls.className="analysis-grid";
+      const first=document.createElement("select"),second=document.createElement("select");
+      for(const [sel,title] of [[first,"Possible Map 1"],[second,"Possible Map 2"]]){
+        sel.setAttribute("aria-label",title);sel.add(new Option(title,""));
+        for(const m of choices)sel.add(new Option(m.name,m.name.toLocaleLowerCase()));
+        controls.append(sel);
+      }
+      const scenario=document.createElement("p");scenario.className="muted";
+      const update=()=>{
+        const a=maps.get(first.value),b=maps.get(second.value);
+        if(!a||!b||a===b){scenario.textContent="Choose two different maps to see a historical map-pair average.";return;}
+        scenario.textContent="On these saved maps: "+((a.hs/a.count)+(b.hs/b.count)).toFixed(2)+
+          " combined HS ("+a.name+" n="+a.count+"; "+b.name+" n="+b.count+
+          "). This adds separate historical map averages, not a forecast. Map order, opponent, roster and veto are unverified.";
+      };
+      first.addEventListener("change",update);second.addEventListener("change",update);update();
+      section.append(controls,scenario);details.append(section);
+    }
     function renderAllPlayers(term=""){
       const box=$("all-player-results");box.replaceChildren();
       if(allIndexedPlayers===null){
@@ -256,11 +327,23 @@
         if(!records.every(m=>m && Number.isInteger(m.map1)&&m.map1>=0 &&
             Number.isInteger(m.map2)&&m.map2>=0&&m.headshots===m.map1+m.map2))
           throw Error("Saved research contains incomplete maps");
+        if(data.schema_version>=2 && !records.every(m=>Array.isArray(m.maps)&&m.maps.length===2&&
+           m.maps.every(x=>x && (x.name===null||typeof x.name==="string")&&
+             Number.isSafeInteger(x.rounds)&&x.rounds>0)&&
+           (m.opponent===null||(m.opponent && Number.isSafeInteger(m.opponent.id)&&
+             m.opponent.id>0&&typeof m.opponent.name==="string"))))
+          throw Error("Saved matchup fields are incomplete");
         const note=document.createElement("p");note.className="muted";
         note.textContent=records.length+" complete available series · researched "+
           String(data.retrieved_at).slice(0,10)+
           " · no automatic updates, no current line. Excluded candidates: "+data.excluded_checked;
         details.append(note);
+        const refresh=document.createElement("a");
+        refresh.href="https://github.com/v4rs4q4ykk-svg/headshot-lab/issues/new?title="+
+          encodeURIComponent("Headshot history request: "+p.id)+"&body="+
+          encodeURIComponent("Nickname: "+p.name);
+        refresh.target="_blank";refresh.rel="noopener noreferrer";
+        refresh.textContent="Request updated research ↗";details.append(refresh);
         if(!records.length){const msg=document.createElement("p");msg.className="muted";msg.textContent="No complete series returned.";details.append(msg);return;}
         const table=document.createElement("table");const thead=document.createElement("thead");
         const header=document.createElement("tr");
@@ -279,10 +362,13 @@
           tbody.append(row);
         }
         table.append(tbody);details.append(table);
+        appendMatchupResearch(details,records);
         for(const m of records){
           const line=document.createElement("p");line.className="muted";
           line.textContent=String(m.played_at).slice(0,10)+" · "+m.team+
-            " · "+m.map1+" + "+m.map2+" = "+m.headshots+" HS";
+            (m.opponent?.name?" vs "+m.opponent.name:"")+" · "+
+            (m.maps?.[0]?.name||"Map 1")+" "+m.map1+" + "+
+            (m.maps?.[1]?.name||"Map 2")+" "+m.map2+" = "+m.headshots+" HS";
           details.append(line);
         }
         const use=document.createElement("button");use.type="button";use.className="button";
