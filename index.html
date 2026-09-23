@@ -193,6 +193,14 @@
       const intro=document.createElement("p");intro.className="muted";
       intro.textContent="Based on these saved series only. Pick an opponent to inspect previous meetings. A map pairing is your scenario, not a predicted veto.";
       section.append(intro);
+      const vetoLink=document.createElement("a");
+      vetoLink.href="https://hyprcs.github.io/cs2-veto/";
+      vetoLink.target="_blank";vetoLink.rel="noopener noreferrer";
+      vetoLink.textContent="Explore an independent CS2 map-veto model ↗";
+      section.append(vetoLink);
+      const vetoNote=document.createElement("p");vetoNote.className="muted";
+      vetoNote.textContent="External, early-stage predictor with partial match history. Check its team coverage and data date; its map probabilities are not Headshot Lab results.";
+      section.append(vetoNote);
       const opponents=new Map();
       for(const m of records){
         if(m.opponent && Number.isSafeInteger(m.opponent.id) && m.opponent.id>0 &&
