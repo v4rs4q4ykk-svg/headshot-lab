@@ -75,3 +75,29 @@ Next work should target a single source with demonstrably permitted access and
 a correctly mapped recent player's complete Map 1+2 record. A public GitHub
 repository or a successful calculation unit test is not by itself a usable
 data license or live feed.
+
+## User's phoebe test: matched identity vs reusable data (2026-09-22)
+
+- Screenshot supplied in chat shows **phoebe**, Mindfreak vs Rooster,
+  **14 Maps 1–2 headshots**, Wednesday 5:00 AM displayed by PrizePicks.
+  Screenshot shows **kairo 11.5, lawlkay 13, Bay 12.5** for the same fixture.
+  This is a frozen screenshot, *not* a feed or current projection value.
+- Cross-checked **Phoebe 'phoebe' Winter**, Mindfreak, HLTV player ID
+  **23613**, https://www.hltv.org/player/23613/phoebe .
+  Public fixture: https://www.hltv.org/matches/2398629/mindfreak-vs-rooster-esl-challenger-league-season-52-oceania-cup-2 .
+  Do not convert or overwrite the screenshot's displayed kickoff time: the
+  site may use a different time zone or source and dates need reconciliation.
+- The accessible HLTV map statistics page includes **K (hs)**, which can
+  provide exact per-map kill headshot counts. However **its Terms of Service,
+  section 2.2 explicitly prohibit scraping/data mining and creating a similar
+  product**. Do NOT automate HLTV collection or lift a headshot database from
+  HLTV for this project without rights/authorization. Terms:
+  https://www.hltv.org/terms .
+- `data/board_snapshot.json` and the dashboard's screenshot-test search
+  preserve player identity and user-provided old lines, while keeping
+  headshot windows unavailable. Source pages are **outbound links only**.
+  A snapshot case should never be promoted to “live data connected”.
+- Search by exact identity and team, match ID, competition, and source date;
+  avoid merging unrelated players who share nicknames. Need independent,
+  permitted current match-history source and permitted PrizePicks data
+  source for automatic L10/L15/L20 vs live projection.
