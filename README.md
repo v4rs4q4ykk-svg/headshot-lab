@@ -2,7 +2,17 @@
 
 CS2 player, opponent and map research with a target recurring cost of $0.
 
-**App:** https://v4rs4q4ykk-svg.github.io/headshot-lab/
+**Current app:** https://headshot-lab-search.jbproducktions.chatgpt.site
+
+Selecting a player now loads stats automatically through the server-backed app in
+`server-app/`. First records stream as they arrive; saved results open immediately.
+A verified cold Dragon search displayed its first records in 0.95 seconds, all 20
+series in 13.3 seconds, and a saved reload in 0.08 seconds in the browser test.
+These are observed test timings, not guaranteed source response times.
+
+The current app is private to its owner through Sign in with ChatGPT. The older
+public saved-data view remains at https://v4rs4q4ykk-svg.github.io/headshot-lab/.
+The GitHub issue flow below describes that older collection pipeline only.
 
 ## Use it
 
