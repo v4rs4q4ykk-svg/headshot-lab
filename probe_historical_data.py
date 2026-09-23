@@ -1,4 +1,4 @@
-"""Manual, bounded access test for an old, third-party CS2 dataset.
+"""Bounded access test for a public historical CS2 replay dataset.
 
 Downloads only dataset-viewer JSON, never large demo archives. No credentials.
 Failure is visible in Actions; no fake data or fallback to FACEIT stats.
@@ -12,9 +12,9 @@ from urllib.request import Request, urlopen
 from headshot_lab import match_totals
 from replay_dataset import normalize_map
 
-DATASET = "blanchon/cs2_dataset_demo_test"
+DATASET = "blanchon/opencs2_dataset_demo"
 BASE = "https://datasets-server.huggingface.co"
-QUERY = urlencode({"dataset": DATASET, "config": "default", "split": "train", "offset": 0, "length": 5})
+QUERY = urlencode({"dataset": DATASET, "config": "default", "split": "train", "offset": 0, "length": 15})
 
 
 def main():
@@ -33,6 +33,7 @@ def main():
                 "permitted source before enabling live collection."
             ) from exc
         raise
+    print(f"HTTP access OK for {DATASET}", flush=True)
     rows = payload.get("rows")
     if not isinstance(rows, list) or not rows:
         raise RuntimeError("dataset viewer did not provide data rows")
