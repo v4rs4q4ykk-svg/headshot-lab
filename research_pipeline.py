@@ -46,7 +46,18 @@ class Client:
         if self.calls:
             time.sleep(0.6)
         self.calls += 1
-        result = get(path, args)
+        try:
+            result = get(path, args)
+        except SourceUnavailable as exc:
+            if str(exc).startswith("HTTP 5"):
+                time.sleep(1)
+                self.calls += 1
+                try:
+                    result = get(path, args)
+                except SourceUnavailable as retry:
+                    raise SourceUnavailable(path + ": " + str(retry)) from None
+            else:
+                raise SourceUnavailable(path + ": " + str(exc)) from None
         write_json(file, result)
         return result
 
@@ -200,7 +211,7 @@ def team_profile(client, team_obj):
     data = rows(client.get("/matches", match_query(**{
         "scope": "widget-map-pool", "page[limit]": 30,
         "filter[matches.team_ids][overlap]": str(team_obj["id"]),
-        "filter[matches.start_date][gt]": (datetime.now(timezone.utc) - timedelta(days=180)).isoformat(),
+        "filter[matches.start_date][gt]": (datetime.now(timezone.utc) - timedelta(days=180)).date().isoformat(),
         "with": "teams,games,match_maps"}), ttl=7200))
     history, seen = [], set()
     for m in data:
@@ -249,28 +260,42 @@ def research(client, player):
     upcoming, profiles = [], {}
     metadata_errors = []
     if positive(tid):
+        stop = False
         try:
             upcoming_rows = rows(client.get("/matches", match_query(**{
                 "page[limit]": 3, "sort": "start_date", "filter[matches.status][in]": "upcoming,current",
-                "filter[matches.team_ids][overlap]": str(tid), "with": "teams,games,match_maps,tournament"}), ttl=300))
+                "filter[matches.team_ids][overlap]": str(tid), "with": "teams,games"}), ttl=300))
             for raw in upcoming_rows:
                 if raw.get("slug"):
-                    raw = client.get("/matches/" + raw["slug"], {"with": "teams,games,match_maps,tournament"}, ttl=300)
+                    try:
+                        raw = client.get("/matches/" + raw["slug"], {"with": "teams,games,match_maps"}, ttl=300)
+                    except SourceUnavailable as exc:
+                        metadata_errors.append(str(exc))
+                        if any(code in str(exc) for code in ("HTTP 401", "HTTP 403", "HTTP 429")):
+                            stop = True
                 f = fixture(raw)
-                if f and tid in [t["id"] for t in f["teams"]]:
+                if f and tid in [t["id"] for t in f["teams"]] and f["status"] in ("upcoming", "current"):
                     upcoming.append(f)
-            wanted = {}
-            for f in upcoming:
-                for t in f["teams"]:
-                    wanted[t["id"]] = t
-            # Recent opponent enables research when no next fixture is published.
-            if results:
-                for t in [{"id": results[0]["team_id"], "name": results[0]["team"], "slug": None}, results[0]["opponent"]]:
-                    wanted.setdefault(t["id"], t)
-            for team_obj in list(wanted.values())[:5]:
-                profiles[str(team_obj["id"])] = team_profile(client, team_obj)
+                if stop:
+                    break
         except SourceUnavailable as exc:
             metadata_errors.append(str(exc))
+            stop = any(code in str(exc) for code in ("HTTP 401", "HTTP 403", "HTTP 429"))
+        wanted = {}
+        for f in upcoming:
+            for t in f["teams"]:
+                wanted[t["id"]] = t
+        if results:
+            for t in [{"id": results[0]["team_id"], "name": results[0]["team"], "slug": None}, results[0]["opponent"]]:
+                wanted.setdefault(t["id"], t)
+        if not stop:
+            for team_obj in list(wanted.values())[:5]:
+                try:
+                    profiles[str(team_obj["id"])] = team_profile(client, team_obj)
+                except SourceUnavailable as exc:
+                    metadata_errors.append(str(exc))
+                    if any(code in str(exc) for code in ("HTTP 401", "HTTP 403", "HTTP 429")):
+                        break
     return {"schema_version": 3, "kind": "cs2_player_research", "bo3_player_id": player["id"],
             "nickname": player["name"], "player": player, "retrieved_at": NOW(),
             "source": "BO3.gg public match and per-game player records", "matches": results,
