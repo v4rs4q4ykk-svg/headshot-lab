@@ -134,3 +134,45 @@ Do NOT build a Cloudflare-bypass downloader or scrape HLTV to fill the
 gap; HLTV Terms 2.2 disallow data mining/scraping and competing services.
 A public research dataset may mirror HLTV assets, but inherited rights
 for ongoing public/commercial reuse remain unverified.
+
+## Verified provider decision — September 22, 2026
+
+The goal is automatic current professional CS2 Map 1+2 HS L10/L15/L20
+against actual current PrizePicks headshot lines, no extra recurring cost.
+Verified provider documentation:
+
+- PandaScore free Fixtures DOES cover player IDs and match listings; our
+  authenticated phoebe test succeeded. CS2 game details and post-match
+  per-player stats are restricted to Historical or higher, so this free
+  token cannot supply the missing map-specific HS records.
+  https://developers.pandascore.co/docs/plan-reference
+- GRID Open Access (requires an application) grants Central Data and
+  Series State only, not Series Events or File Download; whether its
+  accessible CS2 state has *headshot* totals, relevant Mindfreak match
+  coverage, and authorization for fantasy comparisons is UNVERIFIED.
+  Betting & Fantasy is shown as paid. Do not direct the user to another
+  signup or represent OA as a complete solution.
+  https://grid.helpjuice.com/client-help/what-apis-does-an-open-access-developer-have-access-to
+  https://grid.gg/get-access/
+- KashRock claims PrizePicks CS2 props and map history, but its own
+  pricing/marketing pages contradict each other on Sandbox scope:
+  one says 500/day with 30-day history, while the pricing page says
+  2/min and props only without matches; historical gamelogs are listed
+  as higher-tier. Treat free reliable complete last-20 coverage as
+  UNVERIFIED; no signup/payment request until terms and limits reconcile.
+  https://www.kashrock.com/  https://www.kashrock.com/pricing
+- PrizePicks is not identified as offering an official public,
+  documented projection API for this third-party project; screenshots
+  are manual snapshots, not a feed. Any third-party API must be
+  checked for provenance, permission, coverage, and current lines.
+- HLTV TOS 2.2 prohibit automated scraping/data mining and creating
+  competing products. Cloudflare bypass is not the solution.
+  https://www.hltv.org/terms
+
+**Result:** No independently verified provider currently satisfies
+both current feeds within $0/no-new-signups constraints. Do not
+promise completion, promote old sample/fixture matches as live headshots,
+or ask the user to move the 784.5 MB HLTV RAR to iCloud. The next
+meaningful milestone is provider authorization *and* a real per-map
+headshot record *and* a real current line, verified as fresh; otherwise
+keep unavailable fields unavailable.
