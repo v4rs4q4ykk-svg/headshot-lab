@@ -79,11 +79,11 @@ def collect(getter=get_page,sleep=time.sleep,clock=lambda:datetime.now(timezone.
         if page%25==0:print(f"Indexed {len(seen)}/{count} minimal player records",flush=True)
         if offset+LIMIT>=count:
             if len(seen)<count-LIMIT:
-                raise ValueError("Incomplete index: missing too many records")
+                print("Source pagination overlaps substantially; publishing a transparently PARTIAL index.",flush=True)
             return {"schema_version":1,"kind":"identity_index_not_headshot_feed",
                     "source":"BO3.gg public CS2 player filter",
                     "retrieved_at":clock(),
-                    "complete":True,
+                    "complete":len(seen)>=count-LIMIT,
                     "source_reported_count":count,
                     "players":sorted(seen.values(),key=lambda p:(p["name"].casefold(),p["id"]))}
     raise ValueError("Index exceeded safe page cap")
@@ -92,7 +92,7 @@ def main():
     record=collect()
     OUT.parent.mkdir(parents=True,exist_ok=True)
     OUT.write_text(json.dumps(record,ensure_ascii=False,separators=(",",":"))+"\n",encoding="utf-8")
-    print(f"Saved {len(record['players'])} names/IDs; NOT headshot match history.")
+    print(f"Saved {len(record['players'])}/{record['source_reported_count']} names/IDs; complete={record['complete']}; NOT headshot match history.")
 
 if __name__=="__main__":
     main()
