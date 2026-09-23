@@ -71,6 +71,15 @@
       <p>No professional-match headshot feed or permitted PrizePicks line feed has been verified yet. Missing numbers are intentionally not shown as zeros or guesses.</p>
     </section>
 
+    <section class="panel" aria-label="Screenshot test case" id="board-test">
+      <div class="section"><h2>PrizePicks screenshot test</h2><span class="badge">NOT LIVE</span></div>
+      <p class="muted" id="board-info">Loading the saved test case…</p>
+      <p class="muted">These lines were copied from your September 22 screenshot, not collected from a PrizePicks feed. They may have changed or expired. Player links identify the right professional player; verified last-20 headshot totals are still missing.</p>
+      <label for="board-search" class="muted">Find a player from that screenshot</label>
+      <input id="board-search" type="search" placeholder="Try phoebe" autocomplete="off">
+      <div id="board-players" class="empty" aria-live="polite">Loading screenshot players…</div>
+    </section>
+
     <section class="panel" aria-label="Historical research archive">
       <div class="section"><h2>Real headshot archive</h2><span class="badge">OLD MATCHES</span></div>
       <p class="muted" id="archive-info">Loading historical sample…</p>
@@ -132,6 +141,65 @@
         container.append(item);
       }
     }
+    // A frozen user-supplied screenshot, NEVER a current PrizePicks feed.
+    let screenshotPlayers=[];
+    let screenshotFixture=null;
+    const safeHttps = url => typeof url==="string" && /^https:\/\/[^\s]+$/.test(url);
+    function renderBoard(term=""){
+      const root=$("board-players");root.replaceChildren();
+      const query=term.trim().toLowerCase();
+      const found=screenshotPlayers.filter(p=>[p.name,p.team,p.opponent].some(s=>String(s||"").toLowerCase().includes(query)));
+      if(!found.length){
+        root.className="empty";
+        const strong=document.createElement("strong");
+        strong.textContent=screenshotPlayers.length?"Not in this screenshot":"Screenshot not loaded";
+        root.append(strong,document.createTextNode(" This is not a database of the full PrizePicks board."));
+        return;
+      }
+      root.className="";
+      for(const p of found){
+        const el=document.createElement("article");el.className="player";
+        const title=document.createElement("h3");title.textContent=p.name+" · "+p.team;
+        const details=document.createElement("div");details.className="meta";
+        details.textContent="vs "+p.opponent+" · screenshot dated "+screenshotFixture.observed_date;
+        const stats=document.createElement("div");stats.className="stats";
+        const line=document.createElement("span");line.className="stat";
+        line.textContent="Saved Maps 1+2 line: "+p.line+" HS";
+        const history=document.createElement("span");history.className="stat";
+        history.textContent="Verified L10/L15/L20: unavailable";
+        stats.append(line,history);el.append(title,details,stats);
+        if(safeHttps(p.player_url)){
+          const link=document.createElement("a");link.href=p.player_url;link.target="_blank";
+          link.rel="noopener noreferrer";link.textContent="Verified player profile ↗";el.append(link);
+        }
+        if(safeHttps(p.past_results_url)){
+          const link=document.createElement("a");link.href=p.past_results_url;link.target="_blank";
+          link.rel="noopener noreferrer";link.textContent=" · Past match list ↗";el.append(link);
+        }
+        root.append(el);
+      }
+    }
+    $("board-search").addEventListener("input",e=>renderBoard(e.target.value));
+    (async()=>{
+      try{
+        const response=await fetch("./data/board_snapshot.json",{cache:"no-store"});
+        if(!response.ok)throw new Error("HTTP "+response.status);
+        const data=await response.json();
+        if(data.kind!=="manually_captured_board_snapshot" ||
+           data.live_data_connected!==false || data.prizepicks_live_connected!==false ||
+           !Array.isArray(data.players) || typeof data.observed_date!=="string")
+          throw new Error("Untrusted screenshot payload");
+        screenshotFixture=data;
+        screenshotPlayers=data.players.filter(p=>p && typeof p.name==="string" &&
+          typeof p.team==="string" && Number.isFinite(p.line));
+        text($("board-info"),data.fixture+" · "+data.market+
+             " · saved "+data.observed_date+" · "+screenshotPlayers.length+" players pictured");
+        renderBoard($("board-search").value);
+      }catch(error){
+        text($("board-info"),"Screenshot test data unavailable");
+        $("board-players").replaceChildren(document.createTextNode("Could not load the saved screenshot: "+error.message));
+      }
+    })();
     // This archive is independent of the live-feed and projection data.
     // Never use old data for today's lines or call it current.
     let historicalPlayers=[];
