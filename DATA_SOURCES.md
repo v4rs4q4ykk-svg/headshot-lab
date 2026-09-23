@@ -262,3 +262,51 @@ EsportsOdds documents exact nullable `headshots` and some
 published product is paid and not guaranteed to cover every map:
 https://docs.esportsodds.gg/docs/cs2-data/match-stats
 https://esportsodds.gg/cs2-api .
+
+## Exact per-map BO3.gg data breakthrough — 2026-09-22
+
+Important correction to earlier aggregate-only BO3.gg probe: a GitHub code search
+found the **different** endpoint `GET /games/{game_id}/players_stats` via
+https://github.com/alexdistefano306/the-edge/blob/main/edge/data/cs2.py .
+This returns **integer headshot kill counts for individual players on each
+completed map**. The earlier `/players/phoebe/*_stats` endpoints were
+aggregate stats and therefore the wrong API route.
+
+Verified in GitHub Actions:
+https://github.com/v4rs4q4ykk-svg/headshot-lab/actions/runs/35810178636
+
+- Exact BO3 player nickname `phoebe`, BO3 ID **49750**.
+- Match **127697** Mindfreak–Arcade, August 29, 2026, CS2,
+  Map 1 de_nuke **4 headshots**, Map 2 de_mirage **9 headshots**,
+  complete series total **13 headshots**.
+- Each per-map headshot value is an integer, not a headshot percentage;
+  both played maps exist and match's `game_version == 2`.
+
+A bounded *one-time* 25-match-candidate research run obtained 20
+complete Map 1+2 headshot series with a consistent BO3 player profile ID
+**16154** across map rows, including her prior teams:
+https://github.com/v4rs4q4ykk-svg/headshot-lab/actions/runs/35810256579
+
+Relative to the user's saved 14-headshot line: L10 mean 13.1,
+4 over / 5 under / 1 push; L15 mean 15.4,
+9 over / 5 under / 1 push; L20 mean 15.35,
+12 over / 7 under / 1 push. **Five other candidates were
+excluded** (missing/incomplete/other reasons) so these are the
+20 newest *complete available* Map 1+2 series, **NOT necessarily last
+20 matches played**. Dates range October 2025–August 2026.
+No current September 2026 match headshot evidence was obtained.
+The `data/phoebe_research.json` and dashboard show the honest
+one-time sample, explicitly NOT a live feed or prediction.
+
+Remaining hurdles for full requested product:
+- Confirm BO3.gg's permission to automatically retrieve and
+  republish per-map player stats, including fantasy/odds comparisons;
+  its site says all website contents/IP rights reserved:
+  https://bo3.gg/wiki/use-of-services
+- Confirm permission for automated reuse of unofficial PrizePicks
+  projection endpoint; initial one-time access succeeded but an
+  official developer contract has not been established.
+- Build a rate-limited/cached collector for **all board players**
+  with reliable nickname/team/external IDs, data freshness,
+  missing-map handling, and cost/quota monitoring. Do not attempt
+  thousands of requests per run or promise full-board coverage.
