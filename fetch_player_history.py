@@ -27,18 +27,25 @@ def get(path, args=None):
         "Accept": "application/json",
         "User-Agent": "HeadshotLab-Bounded-User-Research/0.3",
     })
-    try:
-        with urlopen(request, timeout=18) as response:
-            if response.status != 200:
-                raise SourceUnavailable("HTTP " + str(response.status))
-            data = response.read(1_000_001)
-            if len(data) > 1_000_000:
-                raise SourceUnavailable("oversized response")
-            return json.loads(data)
-    except HTTPError as exc:
-        raise SourceUnavailable("HTTP " + str(exc.code)) from None
-    except (URLError, TimeoutError, ValueError) as exc:
-        raise SourceUnavailable("invalid/unavailable response") from exc
+    for attempt in range(2):
+        try:
+            with urlopen(request, timeout=24) as response:
+                if response.status != 200:
+                    raise SourceUnavailable("HTTP " + str(response.status))
+                data = response.read(1_000_001)
+                if len(data) > 1_000_000:
+                    raise SourceUnavailable("oversized response")
+                return json.loads(data)
+        except HTTPError as exc:
+            # Authorization/rate-limit errors stop immediately. No evasion.
+            raise SourceUnavailable("HTTP " + str(exc.code)) from None
+        except (URLError, TimeoutError) as exc:
+            if attempt == 0:
+                time.sleep(1.5)
+                continue
+            raise SourceUnavailable("source/network unavailable after one retry") from exc
+        except ValueError as exc:
+            raise SourceUnavailable("source returned invalid JSON") from exc
 
 def rows(data):
     if isinstance(data,list):
