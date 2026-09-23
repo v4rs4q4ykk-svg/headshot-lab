@@ -71,13 +71,24 @@
       <p>No professional-match headshot feed or permitted PrizePicks line feed has been verified yet. Missing numbers are intentionally not shown as zeros or guesses.</p>
     </section>
 
-    <section class="panel" aria-label="Player history">
-      <div class="section"><h2>Player history</h2><span class="muted" id="count-label">0 available</span></div>
-      <label for="search" class="muted">Search a player or team</label>
-      <input id="search" type="search" placeholder="Search players" autocomplete="off">
+    <section class="panel" aria-label="Historical research archive">
+      <div class="section"><h2>Real headshot archive</h2><span class="badge">OLD MATCHES</span></div>
+      <p class="muted" id="archive-info">Loading historical sample…</p>
+      <p class="muted">This separate archive contains real completed professional-match results from an older research dataset. It is NOT today's CS2 board or PrizePicks history.</p>
+      <label for="archive-search" class="muted">Search historical players</label>
+      <input id="archive-search" type="search" placeholder="Search historical players" autocomplete="off">
+      <div id="archive-players" class="empty" aria-live="polite">
+        <strong>Loading verified old matches…</strong>
+      </div>
+      <p class="muted" id="archive-credit">Source attribution will appear when available.</p>
+    </section>
+    <section class="panel" aria-label="Live player history">
+      <div class="section"><h2>Live player history</h2><span class="muted" id="count-label">0 available</span></div>
+      <label for="search" class="muted">Search live players or teams</label>
+      <input id="search" type="search" placeholder="No current feed connected" autocomplete="off">
       <div id="players" class="empty" aria-live="polite">
-        <strong>No verified player records yet</strong>
-        We'll show headshots, L10/L15/L20 history, and original sources here once a real feed is connected.
+        <strong>No live player records yet</strong>
+        Current headshots, L10/L15/L20 and projections will appear here only after verified current feeds are connected.
       </div>
     </section>
   </main>
@@ -121,6 +132,67 @@
         container.append(item);
       }
     }
+    // This archive is independent of the live-feed and projection data.
+    // Never use old data for today's lines or call it current.
+    let historicalPlayers=[];
+    function renderArchive(term=""){
+      const container=$("archive-players");container.replaceChildren();
+      const q=term.trim().toLowerCase();
+      const shown=historicalPlayers.filter(p=>String(p.name).toLowerCase().includes(q));
+      if(!shown.length){
+        container.className="empty";
+        const title=document.createElement("strong");
+        title.textContent=historicalPlayers.length?"No matches in this sample":"No historical archive available";
+        container.append(title,document.createTextNode(historicalPlayers.length?"Try another name.":" No data has been verified yet."));
+        return;
+      }
+      container.className="";
+      for(const p of shown){
+        const article=document.createElement("article");article.className="player";
+        const title=document.createElement("h3");title.textContent=p.name;
+        const small=document.createElement("div");small.className="meta";
+        const count=Array.isArray(p.matches)?p.matches.length:0;
+        small.textContent=count+" completed Map 1+2 series in this OLD sample";
+        article.append(title,small);
+        const records=Array.isArray(p.matches)?p.matches:[];
+        for(const m of records){
+          if(!Number.isInteger(m.headshots))continue;
+          const record=document.createElement("div");record.className="stats";
+          const total=document.createElement("span");total.className="stat";
+          total.textContent=m.headshots+" headshots · Maps 1+2";
+          const date=document.createElement("span");date.className="stat";
+          date.textContent=new Date(m.played_at).toLocaleDateString("en-US",{timeZone:"UTC",year:"numeric",month:"short",day:"numeric"})+" UTC";
+          record.append(total,date);article.append(record);
+          if(typeof m.source_url==="string" && /^https:\/\//.test(m.source_url)){
+            const a=document.createElement("a");a.href=m.source_url;a.target="_blank";a.rel="noopener noreferrer";a.textContent="Original match ↗";
+            article.append(a);
+          }
+        }
+        const note=document.createElement("div");note.className="meta";
+        note.textContent=count<10?"L10/L15/L20: insufficient matches in this sample":"Old sample only — not a current projection analysis";
+        article.append(note);container.append(article);
+      }
+    }
+    $("archive-search").addEventListener("input",event=>renderArchive(event.target.value));
+    (async()=>{
+      try{
+        const response=await fetch("./data/archive.json",{cache:"no-store"});
+        if(!response.ok)throw new Error("HTTP "+response.status);
+        const archive=await response.json();
+        if(archive.kind!=="historical_research_sample" || archive.live_data_connected!==false || !Array.isArray(archive.players))
+          throw new Error("Incorrect archive type");
+        historicalPlayers=archive.players.filter(p=>p && typeof p.name==="string" && typeof p.player_id==="string");
+        text($("archive-info"),historicalPlayers.length+" players · "+archive.completed_series+" completed series from "+archive.earliest_match_date.slice(0,10)+" to "+archive.latest_match_date.slice(0,10)+" (UTC). Not current.");
+        $("archive-credit").replaceChildren(document.createTextNode("Historical research data: "));
+        if(typeof archive.source_url==="string" && /^https:\/\//.test(archive.source_url)){
+          const a=document.createElement("a");a.href=archive.source_url;a.target="_blank";a.rel="noopener noreferrer";a.textContent=archive.dataset+" (dataset attribution ↗)";$("archive-credit").append(a);
+        }
+        renderArchive($("archive-search").value);
+      }catch(error){
+        text($("archive-info"),"Historical research sample unavailable");
+        $("archive-players").replaceChildren(document.createTextNode("Archived results could not be loaded: "+error.message));
+      }
+    })();
     $("search").addEventListener("input",event=>render(event.target.value));
     (async()=>{
       try{
