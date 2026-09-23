@@ -82,18 +82,24 @@ def team_identity(entry):
     name = value.get("name")
     if type(ident) is not int or ident <= 0 or not isinstance(name, str) or not name.strip():
         return None
-    return {"id": ident, "name": name.strip()}
+    aliases = {name.strip().casefold()}
+    for clan in value.get("team_clans") or []:
+        if isinstance(clan, dict) and isinstance(clan.get("clan_name"), str):
+            aliases.add(clan["clan_name"].strip().casefold())
+    return {"id": ident, "name": name.strip(), "aliases": aliases}
 
 def opponent_identity(match, player_team):
     teams = match.get("teams")
+    if teams is None:
+        teams = [match.get("team1"), match.get("team2")]
     if not isinstance(teams, list) or len(teams) != 2 or not isinstance(player_team, str):
         return None
     identities = [team_identity(t) for t in teams]
     if any(t is None for t in identities) or identities[0]["id"] == identities[1]["id"]:
         return None
-    own = [t for t in identities if t["name"].casefold() == player_team.strip().casefold()]
-    other = [t for t in identities if t["name"].casefold() != player_team.strip().casefold()]
-    return other[0] if len(own) == len(other) == 1 else None
+    own = [t for t in identities if player_team.strip().casefold() in t["aliases"]]
+    other = [t for t in identities if player_team.strip().casefold() not in t["aliases"]]
+    return {"id": other[0]["id"], "name": other[0]["name"]} if len(own) == len(other) == 1 else None
 
 def map_identity(game):
     name = game.get("map_name")
