@@ -1,0 +1,199 @@
+{
+  "schema_version": 1,
+  "kind": "one_time_verified_research_sample",
+  "player": {
+    "name": "phoebe",
+    "bo3_player_id": 49750,
+    "bo3_steam_profile_id": 16154,
+    "team_current_at_capture": "Mindfreak"
+  },
+  "retrieved_at": "2026-09-23T02:25:44Z",
+  "source": "BO3.gg public per-game stats endpoint; data reuse and automatic access rights unverified",
+  "source_url": "https://bo3.gg/players/phoebe",
+  "test_run_url": "https://github.com/v4rs4q4ykk-svg/headshot-lab/actions/runs/35810256579",
+  "line": 14,
+  "line_source": "Screenshot plus one-time publicly accessible PrizePicks endpoint test on 2026-09-22; do not represent as perpetually live",
+  "counts": {
+    "l10": {
+      "average": 13.1,
+      "overs": 4,
+      "unders": 5,
+      "pushes": 1
+    },
+    "l15": {
+      "average": 15.4,
+      "overs": 9,
+      "unders": 5,
+      "pushes": 1
+    },
+    "l20": {
+      "average": 15.35,
+      "overs": 12,
+      "unders": 7,
+      "pushes": 1
+    }
+  },
+  "matches": [
+    {
+      "id": 127697,
+      "played_at": "2026-08-29T09:15:00Z",
+      "team": "Mindfreak",
+      "map1": 4,
+      "map2": 9,
+      "headshots": 13
+    },
+    {
+      "id": 127693,
+      "played_at": "2026-08-28T09:20:00Z",
+      "team": "Mindfreak",
+      "map1": 4,
+      "map2": 6,
+      "headshots": 10
+    },
+    {
+      "id": 126067,
+      "played_at": "2026-08-12T10:00:00Z",
+      "team": "Mindfreak",
+      "map1": 2,
+      "map2": 4,
+      "headshots": 6
+    },
+    {
+      "id": 126065,
+      "played_at": "2026-08-11T10:00:00Z",
+      "team": "Mindfreak",
+      "map1": 4,
+      "map2": 5,
+      "headshots": 9
+    },
+    {
+      "id": 126063,
+      "played_at": "2026-08-10T10:10:00Z",
+      "team": "Mindfreak",
+      "map1": 8,
+      "map2": 6,
+      "headshots": 14
+    },
+    {
+      "id": 126057,
+      "played_at": "2026-08-07T10:10:00Z",
+      "team": "Mindfreak",
+      "map1": 8,
+      "map2": 12,
+      "headshots": 20
+    },
+    {
+      "id": 126055,
+      "played_at": "2026-08-04T10:09:26Z",
+      "team": "Mindfreak",
+      "map1": 4,
+      "map2": 11,
+      "headshots": 15
+    },
+    {
+      "id": 126053,
+      "played_at": "2026-08-03T10:20:00Z",
+      "team": "Mindfreak",
+      "map1": 10,
+      "map2": 6,
+      "headshots": 16
+    },
+    {
+      "id": 124159,
+      "played_at": "2026-07-18T03:30:00Z",
+      "team": "MindFreak",
+      "map1": 8,
+      "map2": 9,
+      "headshots": 17
+    },
+    {
+      "id": 124158,
+      "played_at": "2026-07-18T00:00:00Z",
+      "team": "MindFreak",
+      "map1": 6,
+      "map2": 5,
+      "headshots": 11
+    },
+    {
+      "id": 124151,
+      "played_at": "2026-07-17T10:10:00Z",
+      "team": "MindFreak",
+      "map1": 11,
+      "map2": 13,
+      "headshots": 24
+    },
+    {
+      "id": 124149,
+      "played_at": "2026-07-17T03:13:26Z",
+      "team": "MindFreak",
+      "map1": 10,
+      "map2": 8,
+      "headshots": 18
+    },
+    {
+      "id": 122982,
+      "played_at": "2026-06-26T18:00:00Z",
+      "team": "Shimmer",
+      "map1": 2,
+      "map2": 22,
+      "headshots": 24
+    },
+    {
+      "id": 122979,
+      "played_at": "2026-06-23T23:55:59Z",
+      "team": "Shimmer",
+      "map1": 7,
+      "map2": 11,
+      "headshots": 18
+    },
+    {
+      "id": 118527,
+      "played_at": "2026-04-29T09:00:00Z",
+      "team": "low cortisol gaming",
+      "map1": 6,
+      "map2": 10,
+      "headshots": 16
+    },
+    {
+      "id": 118525,
+      "played_at": "2026-04-28T09:10:00Z",
+      "team": "low cortisol gaming",
+      "map1": 7,
+      "map2": 14,
+      "headshots": 21
+    },
+    {
+      "id": 118524,
+      "played_at": "2026-04-27T09:00:00Z",
+      "team": "low cortisol gaming",
+      "map1": 6,
+      "map2": 9,
+      "headshots": 15
+    },
+    {
+      "id": 105348,
+      "played_at": "2025-12-07T04:40:00Z",
+      "team": "Animus Victoria",
+      "map1": 3,
+      "map2": 10,
+      "headshots": 13
+    },
+    {
+      "id": 105342,
+      "played_at": "2025-12-07T01:18:34Z",
+      "team": "Animus Victoria",
+      "map1": 6,
+      "map2": 9,
+      "headshots": 15
+    },
+    {
+      "id": 102554,
+      "played_at": "2025-10-25T09:00:00Z",
+      "team": "Animus Victoria",
+      "map1": 6,
+      "map2": 6,
+      "headshots": 12
+    }
+  ],
+  "note": "20 newest complete available Map 1+2 series from 25 recent match candidates. Excludes five missing/incomplete candidates; NOT necessarily last 20 played matches. No live feed."
+}
