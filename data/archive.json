@@ -1,0 +1,891 @@
+{
+  "schema_version": 1,
+  "kind": "historical_research_sample",
+  "live_data_connected": false,
+  "prizepicks_connected": false,
+  "retrieved_at": "2026-09-23T00:13:22.051715+00:00",
+  "dataset": "blanchon/opencs2_dataset_demo",
+  "source_url": "https://huggingface.co/datasets/blanchon/opencs2_dataset_demo",
+  "maps_scanned": 15,
+  "completed_series": 7,
+  "earliest_match_date": "2026-04-19T06:28:09+00:00",
+  "latest_match_date": "2026-04-19T10:54:25+00:00",
+  "players": [
+    {
+      "player_id": "76561198163048104",
+      "name": "-dethera",
+      "matches": [
+        {
+          "match_id": "2393363",
+          "played_at": "2026-04-19T10:17:12+00:00",
+          "headshots": 9,
+          "source_url": "https://www.hltv.org/matches/2393363/dnk-vs-winners-1xbet-spring-battle-cup-2026"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198069567550",
+      "name": "4X1s",
+      "matches": [
+        {
+          "match_id": "2393178",
+          "played_at": "2026-04-19T10:01:36+00:00",
+          "headshots": 18,
+          "source_url": "https://www.hltv.org/matches/2393178/mouz-nxt-vs-ursa-nodwin-clutch-series-7"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561199551297843",
+      "name": "Ader",
+      "matches": [
+        {
+          "match_id": "2393396",
+          "played_at": "2026-04-19T09:52:45+00:00",
+          "headshots": 19,
+          "source_url": "https://www.hltv.org/matches/2393396/tnc-vs-phantom-academy-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198169630290",
+      "name": "AdrieN",
+      "matches": [
+        {
+          "match_id": "2393396",
+          "played_at": "2026-04-19T09:52:45+00:00",
+          "headshots": 22,
+          "source_url": "https://www.hltv.org/matches/2393396/tnc-vs-phantom-academy-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198840570150",
+      "name": "Aldikon",
+      "matches": [
+        {
+          "match_id": "2393363",
+          "played_at": "2026-04-19T10:17:12+00:00",
+          "headshots": 11,
+          "source_url": "https://www.hltv.org/matches/2393363/dnk-vs-winners-1xbet-spring-battle-cup-2026"
+        },
+        {
+          "match_id": "2393362",
+          "played_at": "2026-04-19T08:41:11+00:00",
+          "headshots": 18,
+          "source_url": "https://www.hltv.org/matches/2393362/depo-vs-winners-1xbet-spring-battle-cup-2026"
+        }
+      ],
+      "completed_matches": 2
+    },
+    {
+      "player_id": "76561198036066702",
+      "name": "Alv",
+      "matches": [
+        {
+          "match_id": "2393178",
+          "played_at": "2026-04-19T10:01:36+00:00",
+          "headshots": 9,
+          "source_url": "https://www.hltv.org/matches/2393178/mouz-nxt-vs-ursa-nodwin-clutch-series-7"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561199070566399",
+      "name": "areokk",
+      "matches": [
+        {
+          "match_id": "2393363",
+          "played_at": "2026-04-19T10:17:12+00:00",
+          "headshots": 14,
+          "source_url": "https://www.hltv.org/matches/2393363/dnk-vs-winners-1xbet-spring-battle-cup-2026"
+        },
+        {
+          "match_id": "2393362",
+          "played_at": "2026-04-19T08:41:11+00:00",
+          "headshots": 15,
+          "source_url": "https://www.hltv.org/matches/2393362/depo-vs-winners-1xbet-spring-battle-cup-2026"
+        }
+      ],
+      "completed_matches": 2
+    },
+    {
+      "player_id": "76561199101320044",
+      "name": "Arima",
+      "matches": [
+        {
+          "match_id": "2393363",
+          "played_at": "2026-04-19T10:17:12+00:00",
+          "headshots": 10,
+          "source_url": "https://www.hltv.org/matches/2393363/dnk-vs-winners-1xbet-spring-battle-cup-2026"
+        },
+        {
+          "match_id": "2393362",
+          "played_at": "2026-04-19T08:41:11+00:00",
+          "headshots": 16,
+          "source_url": "https://www.hltv.org/matches/2393362/depo-vs-winners-1xbet-spring-battle-cup-2026"
+        }
+      ],
+      "completed_matches": 2
+    },
+    {
+      "player_id": "76561198254835598",
+      "name": "ay0k",
+      "matches": [
+        {
+          "match_id": "2393178",
+          "played_at": "2026-04-19T10:01:36+00:00",
+          "headshots": 21,
+          "source_url": "https://www.hltv.org/matches/2393178/mouz-nxt-vs-ursa-nodwin-clutch-series-7"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561199114085239",
+      "name": "Ayteel",
+      "matches": [
+        {
+          "match_id": "2393396",
+          "played_at": "2026-04-19T09:52:45+00:00",
+          "headshots": 17,
+          "source_url": "https://www.hltv.org/matches/2393396/tnc-vs-phantom-academy-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198263735545",
+      "name": "bakorino",
+      "matches": [
+        {
+          "match_id": "2393397",
+          "played_at": "2026-04-19T10:54:25+00:00",
+          "headshots": 8,
+          "source_url": "https://www.hltv.org/matches/2393397/xi-vs-rebels-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198313763418",
+      "name": "biebs",
+      "matches": [
+        {
+          "match_id": "2393266",
+          "played_at": "2026-04-19T06:28:09+00:00",
+          "headshots": 11,
+          "source_url": "https://www.hltv.org/matches/2393266/ding-cuts-vs-abyssal-dfrag-open-series-4"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561199223906381",
+      "name": "Bl4zE",
+      "matches": [
+        {
+          "match_id": "2393398",
+          "played_at": "2026-04-19T09:43:33+00:00",
+          "headshots": 10,
+          "source_url": "https://www.hltv.org/matches/2393398/sashi-academy-vs-infinite-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198189176503",
+      "name": "blood-",
+      "matches": [
+        {
+          "match_id": "2393266",
+          "played_at": "2026-04-19T06:28:09+00:00",
+          "headshots": 6,
+          "source_url": "https://www.hltv.org/matches/2393266/ding-cuts-vs-abyssal-dfrag-open-series-4"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198062114681",
+      "name": "Blytz",
+      "matches": [
+        {
+          "match_id": "2393398",
+          "played_at": "2026-04-19T09:43:33+00:00",
+          "headshots": 13,
+          "source_url": "https://www.hltv.org/matches/2393398/sashi-academy-vs-infinite-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198124692673",
+      "name": "Brain",
+      "matches": [
+        {
+          "match_id": "2393396",
+          "played_at": "2026-04-19T09:52:45+00:00",
+          "headshots": 21,
+          "source_url": "https://www.hltv.org/matches/2393396/tnc-vs-phantom-academy-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198173201923",
+      "name": "buster",
+      "matches": [
+        {
+          "match_id": "2393362",
+          "played_at": "2026-04-19T08:41:11+00:00",
+          "headshots": 26,
+          "source_url": "https://www.hltv.org/matches/2393362/depo-vs-winners-1xbet-spring-battle-cup-2026"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561197992897479",
+      "name": "chedzik",
+      "matches": [
+        {
+          "match_id": "2393396",
+          "played_at": "2026-04-19T09:52:45+00:00",
+          "headshots": 28,
+          "source_url": "https://www.hltv.org/matches/2393396/tnc-vs-phantom-academy-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198088559740",
+      "name": "Damsi",
+      "matches": [
+        {
+          "match_id": "2393398",
+          "played_at": "2026-04-19T09:43:33+00:00",
+          "headshots": 15,
+          "source_url": "https://www.hltv.org/matches/2393398/sashi-academy-vs-infinite-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198048350311",
+      "name": "damyo",
+      "matches": [
+        {
+          "match_id": "2393266",
+          "played_at": "2026-04-19T06:28:09+00:00",
+          "headshots": 29,
+          "source_url": "https://www.hltv.org/matches/2393266/ding-cuts-vs-abyssal-dfrag-open-series-4"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198267298363",
+      "name": "dangeR",
+      "matches": [
+        {
+          "match_id": "2393266",
+          "played_at": "2026-04-19T06:28:09+00:00",
+          "headshots": 15,
+          "source_url": "https://www.hltv.org/matches/2393266/ding-cuts-vs-abyssal-dfrag-open-series-4"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198116595682",
+      "name": "delchud",
+      "matches": [
+        {
+          "match_id": "2393266",
+          "played_at": "2026-04-19T06:28:09+00:00",
+          "headshots": 19,
+          "source_url": "https://www.hltv.org/matches/2393266/ding-cuts-vs-abyssal-dfrag-open-series-4"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198201554338",
+      "name": "Dutor",
+      "matches": [
+        {
+          "match_id": "2393398",
+          "played_at": "2026-04-19T09:43:33+00:00",
+          "headshots": 20,
+          "source_url": "https://www.hltv.org/matches/2393398/sashi-academy-vs-infinite-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198196115510",
+      "name": "Egelund",
+      "matches": [
+        {
+          "match_id": "2393397",
+          "played_at": "2026-04-19T10:54:25+00:00",
+          "headshots": 16,
+          "source_url": "https://www.hltv.org/matches/2393397/xi-vs-rebels-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198063957513",
+      "name": "emiliokislo",
+      "matches": [
+        {
+          "match_id": "2393397",
+          "played_at": "2026-04-19T10:54:25+00:00",
+          "headshots": 15,
+          "source_url": "https://www.hltv.org/matches/2393397/xi-vs-rebels-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198884684412",
+      "name": "ETYYY",
+      "matches": [
+        {
+          "match_id": "2393397",
+          "played_at": "2026-04-19T10:54:25+00:00",
+          "headshots": 16,
+          "source_url": "https://www.hltv.org/matches/2393397/xi-vs-rebels-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198966656353",
+      "name": "Flierax",
+      "matches": [
+        {
+          "match_id": "2393178",
+          "played_at": "2026-04-19T10:01:36+00:00",
+          "headshots": 8,
+          "source_url": "https://www.hltv.org/matches/2393178/mouz-nxt-vs-ursa-nodwin-clutch-series-7"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198065830177",
+      "name": "foggers",
+      "matches": [
+        {
+          "match_id": "2393266",
+          "played_at": "2026-04-19T06:28:09+00:00",
+          "headshots": 24,
+          "source_url": "https://www.hltv.org/matches/2393266/ding-cuts-vs-abyssal-dfrag-open-series-4"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198326172243",
+      "name": "gump-",
+      "matches": [
+        {
+          "match_id": "2393266",
+          "played_at": "2026-04-19T06:28:09+00:00",
+          "headshots": 13,
+          "source_url": "https://www.hltv.org/matches/2393266/ding-cuts-vs-abyssal-dfrag-open-series-4"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198251575480",
+      "name": "Icarus10",
+      "matches": [
+        {
+          "match_id": "2393397",
+          "played_at": "2026-04-19T10:54:25+00:00",
+          "headshots": 15,
+          "source_url": "https://www.hltv.org/matches/2393397/xi-vs-rebels-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198352805913",
+      "name": "indoubt_",
+      "matches": [
+        {
+          "match_id": "2393363",
+          "played_at": "2026-04-19T10:17:12+00:00",
+          "headshots": 13,
+          "source_url": "https://www.hltv.org/matches/2393363/dnk-vs-winners-1xbet-spring-battle-cup-2026"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561197993715784",
+      "name": "Jiace",
+      "matches": [
+        {
+          "match_id": "2393397",
+          "played_at": "2026-04-19T10:54:25+00:00",
+          "headshots": 12,
+          "source_url": "https://www.hltv.org/matches/2393397/xi-vs-rebels-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198193739570",
+      "name": "k0s",
+      "matches": [
+        {
+          "match_id": "2393178",
+          "played_at": "2026-04-19T10:01:36+00:00",
+          "headshots": 17,
+          "source_url": "https://www.hltv.org/matches/2393178/mouz-nxt-vs-ursa-nodwin-clutch-series-7"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198303381179",
+      "name": "kade0",
+      "matches": [
+        {
+          "match_id": "2393362",
+          "played_at": "2026-04-19T08:41:11+00:00",
+          "headshots": 22,
+          "source_url": "https://www.hltv.org/matches/2393362/depo-vs-winners-1xbet-spring-battle-cup-2026"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198843946848",
+      "name": "karnez",
+      "matches": [
+        {
+          "match_id": "2393178",
+          "played_at": "2026-04-19T10:01:36+00:00",
+          "headshots": 14,
+          "source_url": "https://www.hltv.org/matches/2393178/mouz-nxt-vs-ursa-nodwin-clutch-series-7"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198077245619",
+      "name": "kreaz",
+      "matches": [
+        {
+          "match_id": "2393398",
+          "played_at": "2026-04-19T09:43:33+00:00",
+          "headshots": 14,
+          "source_url": "https://www.hltv.org/matches/2393398/sashi-academy-vs-infinite-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198148986856",
+      "name": "maaryyy",
+      "matches": [
+        {
+          "match_id": "2393396",
+          "played_at": "2026-04-19T09:52:45+00:00",
+          "headshots": 18,
+          "source_url": "https://www.hltv.org/matches/2393396/tnc-vs-phantom-academy-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198028522662",
+      "name": "Markos",
+      "matches": [
+        {
+          "match_id": "2393396",
+          "played_at": "2026-04-19T09:52:45+00:00",
+          "headshots": 16,
+          "source_url": "https://www.hltv.org/matches/2393396/tnc-vs-phantom-academy-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198139994961",
+      "name": "maxed",
+      "matches": [
+        {
+          "match_id": "2393266",
+          "played_at": "2026-04-19T06:28:09+00:00",
+          "headshots": 17,
+          "source_url": "https://www.hltv.org/matches/2393266/ding-cuts-vs-abyssal-dfrag-open-series-4"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198155962995",
+      "name": "mhN",
+      "matches": [
+        {
+          "match_id": "2393398",
+          "played_at": "2026-04-19T09:43:33+00:00",
+          "headshots": 20,
+          "source_url": "https://www.hltv.org/matches/2393398/sashi-academy-vs-infinite-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198876068549",
+      "name": "Mizi",
+      "matches": [
+        {
+          "match_id": "2393398",
+          "played_at": "2026-04-19T09:43:33+00:00",
+          "headshots": 14,
+          "source_url": "https://www.hltv.org/matches/2393398/sashi-academy-vs-infinite-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198058045464",
+      "name": "Mol011",
+      "matches": [
+        {
+          "match_id": "2393398",
+          "played_at": "2026-04-19T09:43:33+00:00",
+          "headshots": 11,
+          "source_url": "https://www.hltv.org/matches/2393398/sashi-academy-vs-infinite-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198191011338",
+      "name": "Nami",
+      "matches": [
+        {
+          "match_id": "2393396",
+          "played_at": "2026-04-19T09:52:45+00:00",
+          "headshots": 19,
+          "source_url": "https://www.hltv.org/matches/2393396/tnc-vs-phantom-academy-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198407480534",
+      "name": "Nikodeon",
+      "matches": [
+        {
+          "match_id": "2393178",
+          "played_at": "2026-04-19T10:01:36+00:00",
+          "headshots": 33,
+          "source_url": "https://www.hltv.org/matches/2393178/mouz-nxt-vs-ursa-nodwin-clutch-series-7"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198160794709",
+      "name": "NOPEEj",
+      "matches": [
+        {
+          "match_id": "2393397",
+          "played_at": "2026-04-19T10:54:25+00:00",
+          "headshots": 24,
+          "source_url": "https://www.hltv.org/matches/2393397/xi-vs-rebels-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198295739416",
+      "name": "opdust",
+      "matches": [
+        {
+          "match_id": "2393178",
+          "played_at": "2026-04-19T10:01:36+00:00",
+          "headshots": 12,
+          "source_url": "https://www.hltv.org/matches/2393178/mouz-nxt-vs-ursa-nodwin-clutch-series-7"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561199121253328",
+      "name": "paradise",
+      "matches": [
+        {
+          "match_id": "2393396",
+          "played_at": "2026-04-19T09:52:45+00:00",
+          "headshots": 17,
+          "source_url": "https://www.hltv.org/matches/2393396/tnc-vs-phantom-academy-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561199011430797",
+      "name": "Plain7",
+      "matches": [
+        {
+          "match_id": "2393363",
+          "played_at": "2026-04-19T10:17:12+00:00",
+          "headshots": 14,
+          "source_url": "https://www.hltv.org/matches/2393363/dnk-vs-winners-1xbet-spring-battle-cup-2026"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198334550344",
+      "name": "raiNyyy",
+      "matches": [
+        {
+          "match_id": "2393363",
+          "played_at": "2026-04-19T10:17:12+00:00",
+          "headshots": 15,
+          "source_url": "https://www.hltv.org/matches/2393363/dnk-vs-winners-1xbet-spring-battle-cup-2026"
+        },
+        {
+          "match_id": "2393362",
+          "played_at": "2026-04-19T08:41:11+00:00",
+          "headshots": 19,
+          "source_url": "https://www.hltv.org/matches/2393362/depo-vs-winners-1xbet-spring-battle-cup-2026"
+        }
+      ],
+      "completed_matches": 2
+    },
+    {
+      "player_id": "76561199075800865",
+      "name": "RamBLBi_-",
+      "matches": [
+        {
+          "match_id": "2393363",
+          "played_at": "2026-04-19T10:17:12+00:00",
+          "headshots": 10,
+          "source_url": "https://www.hltv.org/matches/2393363/dnk-vs-winners-1xbet-spring-battle-cup-2026"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198370212771",
+      "name": "rosen2",
+      "matches": [
+        {
+          "match_id": "2393398",
+          "played_at": "2026-04-19T09:43:33+00:00",
+          "headshots": 8,
+          "source_url": "https://www.hltv.org/matches/2393398/sashi-academy-vs-infinite-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198420829570",
+      "name": "Salazar",
+      "matches": [
+        {
+          "match_id": "2393178",
+          "played_at": "2026-04-19T10:01:36+00:00",
+          "headshots": 10,
+          "source_url": "https://www.hltv.org/matches/2393178/mouz-nxt-vs-ursa-nodwin-clutch-series-7"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561199041963406",
+      "name": "sh1seido",
+      "matches": [
+        {
+          "match_id": "2393362",
+          "played_at": "2026-04-19T08:41:11+00:00",
+          "headshots": 17,
+          "source_url": "https://www.hltv.org/matches/2393362/depo-vs-winners-1xbet-spring-battle-cup-2026"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198983126372",
+      "name": "shoxs",
+      "matches": [
+        {
+          "match_id": "2393362",
+          "played_at": "2026-04-19T08:41:11+00:00",
+          "headshots": 15,
+          "source_url": "https://www.hltv.org/matches/2393362/depo-vs-winners-1xbet-spring-battle-cup-2026"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198098071693",
+      "name": "sl3nd",
+      "matches": [
+        {
+          "match_id": "2393398",
+          "played_at": "2026-04-19T09:43:33+00:00",
+          "headshots": 16,
+          "source_url": "https://www.hltv.org/matches/2393398/sashi-academy-vs-infinite-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198228964552",
+      "name": "snapy",
+      "matches": [
+        {
+          "match_id": "2393397",
+          "played_at": "2026-04-19T10:54:25+00:00",
+          "headshots": 19,
+          "source_url": "https://www.hltv.org/matches/2393397/xi-vs-rebels-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198047402862",
+      "name": "stadodo",
+      "matches": [
+        {
+          "match_id": "2393397",
+          "played_at": "2026-04-19T10:54:25+00:00",
+          "headshots": 8,
+          "source_url": "https://www.hltv.org/matches/2393397/xi-vs-rebels-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198081374219",
+      "name": "tier0_s",
+      "matches": [
+        {
+          "match_id": "2393363",
+          "played_at": "2026-04-19T10:17:12+00:00",
+          "headshots": 13,
+          "source_url": "https://www.hltv.org/matches/2393363/dnk-vs-winners-1xbet-spring-battle-cup-2026"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198798935520",
+      "name": "TMKj",
+      "matches": [
+        {
+          "match_id": "2393397",
+          "played_at": "2026-04-19T10:54:25+00:00",
+          "headshots": 16,
+          "source_url": "https://www.hltv.org/matches/2393397/xi-vs-rebels-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198844158232",
+      "name": "valxite",
+      "matches": [
+        {
+          "match_id": "2393266",
+          "played_at": "2026-04-19T06:28:09+00:00",
+          "headshots": 14,
+          "source_url": "https://www.hltv.org/matches/2393266/ding-cuts-vs-abyssal-dfrag-open-series-4"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198077196998",
+      "name": "vinhy-",
+      "matches": [
+        {
+          "match_id": "2393266",
+          "played_at": "2026-04-19T06:28:09+00:00",
+          "headshots": 20,
+          "source_url": "https://www.hltv.org/matches/2393266/ding-cuts-vs-abyssal-dfrag-open-series-4"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198364714069",
+      "name": "weaveR",
+      "matches": [
+        {
+          "match_id": "2393363",
+          "played_at": "2026-04-19T10:17:12+00:00",
+          "headshots": 15,
+          "source_url": "https://www.hltv.org/matches/2393363/dnk-vs-winners-1xbet-spring-battle-cup-2026"
+        },
+        {
+          "match_id": "2393362",
+          "played_at": "2026-04-19T08:41:11+00:00",
+          "headshots": 18,
+          "source_url": "https://www.hltv.org/matches/2393362/depo-vs-winners-1xbet-spring-battle-cup-2026"
+        }
+      ],
+      "completed_matches": 2
+    },
+    {
+      "player_id": "76561198851578993",
+      "name": "wetfy",
+      "matches": [
+        {
+          "match_id": "2393362",
+          "played_at": "2026-04-19T08:41:11+00:00",
+          "headshots": 11,
+          "source_url": "https://www.hltv.org/matches/2393362/depo-vs-winners-1xbet-spring-battle-cup-2026"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198998266210",
+      "name": "xelex",
+      "matches": [
+        {
+          "match_id": "2393178",
+          "played_at": "2026-04-19T10:01:36+00:00",
+          "headshots": 31,
+          "source_url": "https://www.hltv.org/matches/2393178/mouz-nxt-vs-ursa-nodwin-clutch-series-7"
+        }
+      ],
+      "completed_matches": 1
+    },
+    {
+      "player_id": "76561198113182046",
+      "name": "yvro",
+      "matches": [
+        {
+          "match_id": "2393396",
+          "played_at": "2026-04-19T09:52:45+00:00",
+          "headshots": 10,
+          "source_url": "https://www.hltv.org/matches/2393396/tnc-vs-phantom-academy-parken-challenger-championship-season-5"
+        }
+      ],
+      "completed_matches": 1
+    }
+  ],
+  "note": "Historical March–April 2026 research sample. Not a current CS2 or PrizePicks feed. Incomplete series are excluded."
+}
