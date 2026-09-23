@@ -234,3 +234,31 @@ freshness, or all player/market coverage. Finding the projection line
 does NOT supply L10/L15/L20 or exact Map 1+2 historical headshots.
 Do not set `live_data_connected` true before both feeds and rights
 are independently verified.
+
+## BO3.gg free API schema trial (September 22, 2026)
+
+One-shot, public, no-bypass/no-browser-impersonation test:
+https://github.com/v4rs4q4ykk-svg/headshot-lab/actions/runs/35809951371
+
+All four routes returned HTTP 200:
+`/filters/players?search_text=phoebe`, `/players/phoebe/general_stats`,
+`/players/phoebe/map_stats`, `/players/phoebe/accuracy_stats`.
+The general endpoint contains cumulative kills/deaths but no HS or
+match-level breakout. Map stats contain aggregate per-map-name
+averages (kills/damage/rating), not a chronologically ordered HS log.
+Accuracy stats contain `hit_group` with `kills_sum` cumulative counts,
+not exact Maps 1+2 headshots on each of phoebe's last 20 matches.
+
+**Conclusion:** the tested free endpoints work but fail the specific
+headshot-history data contract; do not infer per-match HS from HS% or
+cumulative kills, or treat BO3.gg as a verified licensed live feed.
+The open-source `tommhe14/CS2API` wrapper exposes these same aggregate
+routes but does not prove an authorized full historical HS endpoint.
+A demo-parser repo can compute HS for provided demos but has no
+automatic authorized catalog of pro demos.
+
+EsportsOdds documents exact nullable `headshots` and some
+`map_number` rows, with `data_available.map_stats`; the
+published product is paid and not guaranteed to cover every map:
+https://docs.esportsodds.gg/docs/cs2-data/match-stats
+https://esportsodds.gg/cs2-api .
