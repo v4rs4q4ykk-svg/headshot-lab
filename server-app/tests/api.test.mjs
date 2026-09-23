@@ -22,6 +22,10 @@ test('a blocked source stops subsequent requests and missing maps are excluded',
  const fetcher=async url=>Response.json(new URL(url).pathname.endsWith('/matches')?{results:[{id:12,slug:'test-match'}]}:{...match,games:[match.games[0]]});const result=await historyBatch(new Client({cache:null,fetcher}),123,0);assert.equal(result.matches.length,0);assert.equal(result.excluded.length,1);
 });
 test('rejects arbitrary player IDs and out-of-range pagination',async()=>{await assert.rejects(historyBatch(new Client(),-1,0),/Invalid/);await assert.rejects(historyBatch(new Client(),123,60),/Invalid/);});
+test('native fetch keeps its required global receiver',async()=>{
+ const previous=globalThis.fetch;globalThis.fetch=function(){assert.equal(this,globalThis,'Native fetch called with an invalid receiver');return Promise.resolve(Response.json({headshots:12}));};
+ try{assert.deepEqual(await new Client({cache:null}).get('/native-receiver'),{headshots:12});}finally{globalThis.fetch=previous;}
+});
 test('restricted default cache never blocks history and named cache is reused',async()=>{
  const previous=Object.getOwnPropertyDescriptor(globalThis,'caches');let defaultReads=0,opens=0,calls=0;
  const map=new Map(),cache={async match(r){return map.get(r.url)?.clone();},async put(r,v){map.set(r.url,v.clone());}};

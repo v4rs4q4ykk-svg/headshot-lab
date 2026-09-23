@@ -8,7 +8,7 @@ export class SourceError extends Error{constructor(message,status=502){super(mes
 const inflight=new Map();let active=0;const waiting=[];
 async function slot(fn){if(active>=4)await new Promise(r=>waiting.push(r));active++;try{return await fn();}finally{active--;waiting.shift()?.();}}
 export class Client{
- constructor({fetcher=fetch,cache,signal}={}){this.fetcher=fetcher;this.cachePromise=cache===undefined?null:Promise.resolve(cache);this.signal=signal;this.calls=0;this.blocked=null;}
+ constructor({fetcher=(...args)=>globalThis.fetch(...args),cache,signal}={}){this.fetcher=fetcher;this.cachePromise=cache===undefined?null:Promise.resolve(cache);this.signal=signal;this.calls=0;this.blocked=null;}
  async sourceCache(){
   // Namespaced Workers cannot access caches.default. The named cache is an
   // optional optimization: opening, reading or writing it must never stop data.
@@ -35,7 +35,7 @@ export class Client{
     let value;try{value=transform(JSON.parse(body));}catch{throw new SourceError('The stats source returned an unreadable response.');}
     if(cache){try{await cache.put(key,new Response(JSON.stringify(value),{headers:{'Content-Type':'application/json','Cache-Control':'public, max-age='+ttl}}));}catch{this.cachePromise=Promise.resolve(null);}}
     return value;
-   }catch(e){if(e instanceof SourceError)throw e;throw new SourceError(controller.signal.aborted?'The stats source took too long. Please retry.':'Could not connect to the stats source.');}
+   }catch(e){if(e instanceof SourceError)throw e;console.error('Source connection failed',{path,name:e?.name,message:e?.message});throw new SourceError(controller.signal.aborted?'The stats source took too long. Please retry.':'Could not connect to the stats source.');}
    finally{clearTimeout(timeout);this.signal?.removeEventListener('abort',cancel);}
   });inflight.set(url.href,task);try{return await task;}finally{inflight.delete(url.href);}
  }
