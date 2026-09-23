@@ -1,0 +1,16 @@
+name: Diagnose BO3 player coverage
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "probe_player_coverage.py"
+      - ".github/workflows/probe-player-coverage.yml"
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 probe_player_coverage.py
