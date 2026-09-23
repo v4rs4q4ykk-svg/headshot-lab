@@ -110,7 +110,7 @@ async function sourceSearch(query,selectExact=false){
   searchController?.abort();searchController=new AbortController();const signal=searchController.signal;
   const root=$('search-results'),status=el('p','Searching player records…','small muted');root.append(status);
   try{const r=await fetch('./api/search?q='+encodeURIComponent(query),{signal});const x=await r.json();if(!r.ok)throw Error(x.message||'Source search is unavailable.');if(signal.aborted||$('player-search').value.trim()!==query)return;
-    for(const p of x.players||[]){const i=state.index.findIndex(y=>y.id===p.id);if(i<0)state.index.push(p);else state.index[i]={...state.index[i],...p};}
+    for(const p of x.players||[]){const i=state.index.findIndex(y=>y.id===p.id);if(i<0)state.index.push(p);else state.index[i]={...state.index[i],...p};const saved=state.catalog.find(y=>y.id===p.id);if(saved){saved.name=p.name;saved.team_id=p.team_id;}}
     const exact=(x.players||[]).filter(p=>p.name.toLowerCase()===query.toLowerCase());
     if(selectExact&&exact.length===1){loadPlayer(exact[0].id,exact[0].name);return;}renderSearch();
     if(!x.players?.length)root.append(el('p','No matching player was returned by the stats source. Check the spelling.','small muted'));

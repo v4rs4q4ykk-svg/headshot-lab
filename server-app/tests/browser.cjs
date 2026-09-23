@@ -20,7 +20,7 @@ const server=spawn('node',['dev.mjs'],{cwd:root,stdio:'inherit'});
  await page.locator('#opponent-select').selectOption(String(data.matches[0].opponent.id));assert.equal(await page.locator('#history-table tbody tr').count(),data.matches.filter(m=>m.opponent.id===data.matches[0].opponent.id).length);
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Mobile overflow');
  fs.mkdirSync(path.join(root,'test-results'),{recursive:true});await page.screenshot({path:path.join(root,'test-results/phone.png'),fullPage:true});
- const warm=Date.now();await page.reload();await page.waitForFunction(()=>!document.getElementById('player-view').hidden&&document.getElementById('request-panel').hidden);const warmMs=Date.now()-warm;assert.ok(warmMs<3500,'Repeat search should use saved results');
+ const warm=Date.now();await page.reload();await page.waitForFunction(()=>!document.getElementById('player-view').hidden&&document.getElementById('request-panel').hidden);const warmMs=Date.now()-warm;assert.ok(warmMs<3500,'Repeat search should use saved results');console.log(JSON.stringify({uncachedPlayer:'Dragon',series:data.matches.length,firstMs,fullMs,warmMs}));
  await page.setViewportSize({width:1280,height:900});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
  // A new source identity can load without an index entry or an issue request.
  await page.route('**/api/search?q=testnew*',r=>r.fulfill({contentType:'application/json',body:JSON.stringify({players:[{id:29224,name:'testnew',team_id:22185}]})}));
