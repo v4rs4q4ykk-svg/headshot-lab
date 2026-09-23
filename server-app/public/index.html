@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1015">
+  <meta name="description" content="CS2 headshot research: match history, opponent results, map veto estimates and projection comparisons.">
+  <title>Headshot Lab · CS2 Research</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./analysis.js" defer></script>
+  <script src="./app.js" defer></script>
+</head>
+<body>
+<header class="site-header"><a href="./" class="brand">HEADSHOT<span>LAB</span><small>CS2 RESEARCH</small></a><a href="#leaderboard" class="quiet-link">Player board ↗</a></header>
+<main>
+  <section class="search-panel">
+    <div class="eyebrow">MAPS 1 + 2 · HEADSHOTS</div>
+    <h1>Research the matchup.</h1>
+    <p class="intro">Find a player. Check their opponent, maps, and recent headshots.</p>
+    <label class="sr-only" for="player-search">Search CS2 players</label>
+    <div class="search-wrap"><span aria-hidden="true">⌕</span><input id="player-search" type="search" placeholder="Search any CS2 nickname…" autocomplete="off" spellcheck="false"></div>
+    <div id="search-results" aria-live="polite"></div>
+    <div id="quick-players" class="chips"></div>
+    <p id="catalog-status" class="small muted">Loading player coverage…</p>
+  </section>
+  <section id="request-panel" class="panel" hidden aria-live="polite"></section>
+  <section id="player-view" hidden>
+    <div class="profile-head"><div><div id="player-team" class="eyebrow"></div><h2 id="player-name"></h2><p id="player-meta" class="small muted"></p></div><button id="refresh-player" class="secondary" type="button">Refresh research</button></div>
+    <div class="line-panel panel"><div><label for="projection">Your PrizePicks line</label><p class="small muted">Enter the current Maps 1–2 headshot line. Saved only on this device.</p></div><input id="projection" type="number" min="0" max="200" step="0.5" inputmode="decimal" placeholder="e.g. 17.5"><button id="clear-line" type="button" class="text-button">Clear</button></div>
+    <div id="window-stats" class="metric-grid"></div>
+    <p id="coverage-note" class="small muted"></p>
+    <section class="panel">
+      <div class="section-head"><div><div class="eyebrow">NEXT MATCH</div><h3>Opponent &amp; likely maps</h3></div><span id="fixture-status" class="pill"></span></div>
+      <label for="fixture-select" class="small muted">Choose a matchup</label><select id="fixture-select"></select>
+      <div id="fixture-summary" class="small muted"></div>
+      <div id="forecast-output"></div>
+      <details class="method"><summary>How the map estimate works</summary><p>Confirmed Map 1 and Map 2 selections take priority. Before the veto, the model uses each team’s recent first bans and picks, weighs recent matches more, and considers both possible acting orders. It requires at least five complete BO3 vetoes from each team in the same observed pool. That pool is inferred from recent vetoes; tournament rules may differ.</p><p>These are experimental model estimates, not calibrated win or betting probabilities. The headshot baseline combines map likelihood, the player’s headshots per round, and typical map length. Small map samples are pulled toward the player’s overall rate. Roster changes and player roles are not modeled.</p></details>
+    </section>
+    <section class="panel">
+      <div class="section-head"><div><div class="eyebrow">HISTORICAL COMPARISON</div><h3>Against the opponent</h3></div></div>
+      <div class="filter-grid"><div><label for="opponent-select" class="small muted">Opponent</label><select id="opponent-select"></select></div><div><label for="date-range" class="small muted">History range</label><select id="date-range"><option value="all">All saved dates</option><option value="180">Last 180 days</option><option value="90">Last 90 days</option><option value="30">Last 30 days</option></select></div></div>
+      <div id="opponent-summary"></div>
+      <div id="history-chart" aria-label="Headshots per saved series"></div>
+      <p class="small muted">Green is above your line; red is below; gold is a push. The table below contains the exact values.</p>
+      <h4>Map performance in this selection</h4><div id="map-table" class="table-wrap"></div>
+      <details><summary>Test a different map combination</summary><div class="filter-grid"><select id="scenario-one" aria-label="Scenario map one"></select><select id="scenario-two" aria-label="Scenario map two"></select></div><div id="scenario-output" class="small muted"></div></details>
+      <h4>Match history</h4><div id="history-table" class="table-wrap"></div>
+    </section>
+  </section>
+  <section id="leaderboard" class="panel">
+    <div class="section-head"><div><div class="eyebrow">COLLECTED PLAYERS</div><h3>Research board</h3></div><select id="board-sort" aria-label="Sort research board"><option value="coverage">Most history</option><option value="average">L10 average</option><option value="over">Over rate</option></select></div>
+    <p class="small muted">Enter each player’s own line to compare historical over rates. Averages need ten saved series. Some players have only the matches collected alongside another player.</p>
+    <div id="board-table" class="table-wrap"></div>
+  </section>
+  <details class="panel"><summary>Data coverage &amp; refresh</summary><div id="source-notes"><p>History comes from BO3.gg’s public completed-match records. A series is counted only when the same source player ID has valid integer headshots on completed Maps 1 and 2. Missing statistics stay missing.</p><p>Selecting a player loads their stats automatically. Saved history opens first while older or incomplete history updates. A first search fetches records from the source, so loading time depends on its response. Completed match records are cached for repeat searches. Missing records are excluded, never filled with estimates.</p><p>PrizePicks lines are entered manually. There is no real-time headshot or automated PrizePicks feed. Model estimates and historical hit rates do not guarantee outcomes.</p></div></details>
+</main>
+<footer>Headshot Lab · CS2 only · <a href="https://github.com/v4rs4q4ykk-svg/headshot-lab">Source &amp; method</a></footer>
+</body>
+</html>
