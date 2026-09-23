@@ -101,3 +101,36 @@ data license or live feed.
   avoid merging unrelated players who share nicknames. Need independent,
   permitted current match-history source and permitted PrizePicks data
   source for automatic L10/L15/L20 vs live projection.
+
+## 2026-09-22: Actual phoebe demo-sourcing trial
+
+Ran GitHub Actions `Check PandaScore player identity` (run 35803818469)
+against the user's private `PANDASCORE_TOKEN` secret. Free endpoint
+`GET /players/51078/matches?per_page=25&sort=-begin_at` succeeded,
+returning **25 player match fixtures** (20 logged); for example:
+
+- 2026-08-29: Mindfreak vs Arcade Esports (PandaScore match 1650136)
+- 2026-08-11: Rooster vs Mindfreak (1615360)
+- 2026-07-17: Rooster vs Mindfreak (1576460)
+
+Every printed item lacked any top-level `demo` or `replay` field.
+**Fixture IDs are not downloadable demo URLs**, and this endpoint provided
+no per-map headshot totals. Thus the API can find phoebe's recent match
+list but *does not solve demo acquisition*. These matches cover multiple
+teams/time periods and are not automatically the relevant, current
+last-20 headshot sample without further verification.
+
+A CS2 parser such as `demoparser2` can query the `player_death` events
+from a **properly obtained** `.dem` file and count headshot kills by
+Steam ID. This does not source the demos or map them to PandaScore IDs:
+https://github.com/LaihoE/demoparser .
+
+FACEIT's official Downloads API uses private signed download URLs and
+requires a separate access application and scoped token; it is not
+an unregistered free mirror for arbitrary tournament matches:
+https://docs.faceit.com/getting-started/Guides/download-api/ .
+
+Do NOT build a Cloudflare-bypass downloader or scrape HLTV to fill the
+gap; HLTV Terms 2.2 disallow data mining/scraping and competing services.
+A public research dataset may mirror HLTV assets, but inherited rights
+for ongoing public/commercial reuse remain unverified.
