@@ -5,6 +5,8 @@ on:
   push:
     paths:
       - "headshot_lab.py"
+      - "index.html"
+      - "data/board_snapshot.json"
       - "tests/**"
       - ".github/workflows/headshot-lab.yml"
 
