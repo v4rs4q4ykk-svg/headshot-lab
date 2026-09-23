@@ -211,3 +211,26 @@ Acceptance gate remains: one permitted current board line + last
 matched by player ID and team, timestamped and refreshed automatically
 with $0 recurring charge. This gate has NOT passed. No synthetic live
 numbers or fake "completed" state on the website.
+
+## PrizePicks public endpoint access probe — 2026-09-22
+
+A *single* read-only access test in GitHub Actions run
+https://github.com/v4rs4q4ykk-svg/headshot-lab/actions/runs/35808369871
+accessed the undocumented endpoint used by `moondevonyt/prize-picks-bot`:
+`https://partner-api.prizepicks.com/projections?per_page=100`.
+No bypass, impersonation, payment, API key, persistent data store or
+automated collection was used. It returned valid JSON and **15,607
+projections** despite the requested 100 per page; **308** were identified
+as CS2/CSGO, **146** as CS2 headshot markets. The response included
+**phoebe** / `MAPS 1-2 Headshots` / **14**, matching the user's screenshot
+captured September 22.
+
+The first two probe runs rejected the response at the conservative 4 MB
+limit, which caused green workflows without usable JSON. The successful
+third probe used a bounded 32 MB read; no feed is deployed. It is an
+unofficial, undocumented endpoint; no claim of complete geographic
+availability, long-term reliability, authorized reuse, timestamp
+freshness, or all player/market coverage. Finding the projection line
+does NOT supply L10/L15/L20 or exact Map 1+2 historical headshots.
+Do not set `live_data_connected` true before both feeds and rights
+are independently verified.
