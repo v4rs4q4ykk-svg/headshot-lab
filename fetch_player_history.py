@@ -32,8 +32,8 @@ def get(path, args=None):
             with urlopen(request, timeout=24) as response:
                 if response.status != 200:
                     raise SourceUnavailable("HTTP " + str(response.status))
-                data = response.read(1_000_001)
-                if len(data) > 1_000_000:
+                data = response.read(4_000_001)
+                if len(data) > 4_000_000:
                     raise SourceUnavailable("oversized response")
                 return json.loads(data)
         except HTTPError as exc:

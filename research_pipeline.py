@@ -30,7 +30,7 @@ def write_json(path, value):
 
 
 class Client:
-    def __init__(self, cache=Path(".cache/bo3"), budget=180):
+    def __init__(self, cache=Path(".cache/bo3"), budget=220):
         self.cache, self.budget, self.calls = cache, budget, 0
 
     def get(self, path, args=None, ttl=3600):
@@ -202,9 +202,18 @@ def completed_series(match, stats_by_number):
 
 
 def match_query(**extra):
-    return {"scope": "widget-matches", "page[offset]": 0, "page[limit]": 60,
+    return {"scope": "widget-matches", "page[offset]": 0, "page[limit]": 20,
             "sort": "-start_date", "filter[matches.status][in]": "finished",
-            "filter[matches.discipline_id][eq]": 1, "with": "teams,games", **extra}
+            "filter[matches.discipline_id][eq]": 1, "with": "teams", **extra}
+
+
+def player_candidates(client, ident):
+    for offset in (0, 20, 40):
+        page = rows(client.get("/matches", match_query(**{
+            "page[offset]": offset, "filter[matches.player_ids][overlap]": str(ident)}), ttl=300))
+        yield from page
+        if len(page) < 20:
+            break
 
 
 def team_profile(client, team_obj):
@@ -228,8 +237,7 @@ def team_profile(client, team_obj):
 
 
 def research(client, player):
-    candidates = rows(client.get("/matches", match_query(**{
-        "filter[matches.player_ids][overlap]": str(player["id"])}), ttl=300))
+    candidates = player_candidates(client, player["id"])
     results, peers, exclusions, seen = [], {}, [], set()
     checked = 0
     for cand in candidates:
