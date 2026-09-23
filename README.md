@@ -1,43 +1,47 @@
 # Headshot Lab
 
-CS2 headshot-history research tracker with a target recurring cost of $0.
+A CS2 headshot-history research dashboard with a target recurring cost of $0.
 
-## What works
+## Available now
 
-- GitHub Actions runs Python unit tests.
-- The calculation engine combines **Maps 1 and 2 only**, uses exact player IDs,
-  excludes incomplete matches, distinguishes over/under/push, and reports
-  "insufficient data" if fewer than 10, 15, or 20 completed matches exist.
-- Calculation and replay-schema tests use **fictional fixtures**, not live stats.
+- **iPhone dashboard:** https://v4rs4q4ykk-svg.github.io/headshot-lab/
+- Python engine calculates completed Maps 1+2 headshots with exact player IDs,
+  excludes partial matches and distinguishes over/under/push.
+- GitHub Actions calculation tests.
+- **Real historical research sample:** The public
+  [blanchon/opencs2_dataset_demo](https://huggingface.co/datasets/blanchon/opencs2_dataset_demo)
+  dataset successfully returned an older sample. A bounded collector validates
+  complete Maps 1+2 results and saves them to `data/archive.json`.
+- The dashboard displays these old match results in a **separate historical
+  archive**, with original-match links, source attribution and clear dates.
+  This sample is **not** a source of current player performance.
 
-## What is blocked or unverified
+## Not finished / do not misrepresent
 
-- **September 22, 2026:** the first attempt to retrieve
-  blanchon/cs2_dataset_demo_test through the Hugging Face dataset-viewer
-  /rows endpoint failed with **HTTP 401 Unauthorized**. Do not infer that
-  the source is freely accessible, and do not purchase anything for it.
-- The source's actual fields, available games, licensing for our use, and
-  current coverage remain **unverified**. replay_dataset.py is a tentative
-  normalization adapter for a proposed event/roster schema, not a verified
-  production importer.
-- We do **not** have a live professional CS2 feed, PrizePicks integration,
-  automated updates, or a completed iPhone dashboard yet. No live-data
-  success should be inferred from green unit-test checks.
-- FACEIT matchmaking results are not interchangeable with the professional
-  tournament matches on the PrizePicks board.
+- **No reliable current professional CS2 headshot feed is connected.**
+- **No authorized live PrizePicks projection feed is connected.**
+- The historical sample is from April 2026 and does NOT provide the last 20
+  current matches for all players; do not calculate L10/L15/L20 from an
+  insufficient sample.
+- The app is NOT a completed fully automatic current-day PrizePicks tracker.
+  Source permission, coverage and freshness must be established before enabling
+  a current feed.
+- A `401 Unauthorized` on an older, incorrectly named sample source led to
+  a corrected dataset ID, which the bounded probe and sample publisher have
+  now accessed successfully. The fact a HISTORICAL source works does not mean
+  live access works.
+- Tournament organizers' terms may apply to underlying demo material.
+  Archive is for attributed personal research; investigate rights before
+  redistribution or commercial use.
 
-## Run tests
+## Tests and maintenance
 
-Use Actions → Headshot Lab or run:
+- **Actions → Headshot Lab** runs the unit tests.
+- **Actions → Probe historical CS2 data** checks a bounded source sample.
+- **Actions → Publish historical CS2 sample** refreshes the bounded archived
+  research sample on demand or when its collector code changes.
+- Source is historical; do not schedule that collector as if it creates
+  updated current match results.
+- Never put API keys in this public repository or display missing stats as zero.
 
-    python3 -m unittest discover -s tests -v
-
-## Source requirements
-
-Before deploying automated collection, independently verify an authorized,
-free source that supplies real completed professional matches with a match ID,
-exact player ID, correct map 1/2 headshot counts and dates, and adequate
-coverage for the players on the board. Check usage terms and freshness.
-
-Do not put API keys or passwords in this public repository. Missing data must
-stay missing, never be replaced with zeros or fabricated stats.
+See [DATA_SOURCES.md](DATA_SOURCES.md) for sources considered and rejected.
