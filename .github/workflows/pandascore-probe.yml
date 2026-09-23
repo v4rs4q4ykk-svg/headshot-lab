@@ -1,0 +1,19 @@
+name: Check PandaScore player identity
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fixtures_probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Check only free player and team lookup endpoints
+        env:
+          PANDASCORE_TOKEN: ${{ secrets.PANDASCORE_TOKEN }}
+        run: python3 probe_pandascore.py
