@@ -45,12 +45,19 @@ export function completedSeries(m,stats){
 const query=extra=>({'scope':'widget-matches','page[limit]':10,'page[offset]':0,'sort':'-start_date','filter[matches.status][in]':'finished','filter[matches.discipline_id][eq]':1,'with':'teams',...extra});
 export async function historyBatch(client,id,offset,emit=()=>{}){
  if(!positive(id)||!Number.isInteger(offset)||offset<0||offset>50||offset%10)throw new SourceError('Invalid player or history page.',400);
- const candidates=rows(await client.get('/matches',query({'page[offset]':offset,'filter[matches.player_ids][overlap]':id}),300));
+ const candidates=rows(await client.get('/matches',query({'page[offset]':offset,'filter[matches.player_ids][overlap]':id,with:'teams,games'}),300));
  const seen=new Set(),matches=[],excluded=[];let player=null,index=0;
  async function next(){while(index<candidates.length){if(client.blocked)throw client.blocked;const c=candidates[index++];if(seen.has(c.id))continue;seen.add(c.id);if(!/^[a-zA-Z0-9_-]{1,180}$/.test(c.slug||''))continue;
-  const m=await client.get('/matches/'+c.slug,{with:'teams,games,match_maps'},86400);
+  // The listing gives map IDs, so fetch stats alongside match verification.
+  // Only matching, completed CS2 maps from the detail response are accepted.
+  const listed=(c.games||[]).filter(g=>[1,2].includes(g.number)&&positive(g.id));
+  const ready=listed.length===2&&new Set(listed.map(g=>g.number)).size===2;
+  const [m,early]=await Promise.all([
+   client.get('/matches/'+c.slug,{with:'teams,games,match_maps'},86400),
+   ready?Promise.all(listed.map(async g=>[g.id,await client.get('/games/'+g.id+'/players_stats',{},86400,normalizeStats)])):Promise.resolve([])
+  ]);const prefetched=new Map(early);
   const games=(m.games||[]).filter(g=>[1,2].includes(g.number));let record=null;
-  if(m.game_version===2&&m.status==='finished'&&games.length===2&&new Set(games.map(g=>g.number)).size===2&&games.every(g=>g.status==='finished'&&positive(g.rounds_count)&&positive(g.id))){const all=await Promise.all(games.map(async g=>[g.number,await client.get('/games/'+g.id+'/players_stats',{},86400,normalizeStats)]));const found=completedSeries(m,Object.fromEntries(all));if(found[id]){player=found[id].player;record=found[id].record;matches.push(record);}}
+  if(m.game_version===2&&m.status==='finished'&&games.length===2&&new Set(games.map(g=>g.number)).size===2&&games.every(g=>g.status==='finished'&&positive(g.rounds_count)&&positive(g.id))){const all=await Promise.all(games.map(async g=>[g.number,prefetched.get(g.id)||await client.get('/games/'+g.id+'/players_stats',{},86400,normalizeStats)]));const found=completedSeries(m,Object.fromEntries(all));if(found[id]){player=found[id].player;record=found[id].record;matches.push(record);}}
   if(!record)excluded.push({id:m.id,date:m.start_date,reason:'No two completed CS2 maps with verified player headshots'});
   emit({type:'progress',record,player:record?player:null,checked:matches.length+excluded.length});
  }}
