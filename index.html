@@ -76,6 +76,15 @@
       <div class="fact"><small>Projection lines</small><strong id="line-count">—</strong></div>
     </div>
 
+    <section class="panel" id="all-player-search" aria-label="Search all indexed CS2 players">
+      <div class="section"><h2>Search CS2 players</h2><span class="badge">IDENTITY INDEX</span></div>
+      <p class="muted" id="index-info">Loading searchable player names…</p>
+      <label for="all-search" class="muted">Search any CS2 player nickname</label>
+      <input id="all-search" type="search" placeholder="e.g. phoebe, ZywOo, NiKo" autocomplete="off" spellcheck="false">
+      <div id="all-player-results" class="empty" aria-live="polite">Loading…</div>
+      <p class="muted">This searches BO3.gg's player index, not the complete PrizePicks board. A name match is NOT a verified current team or available headshot history. Profiles with the same nickname have different IDs.</p>
+    </section>
+
     <section class="panel warning" id="notice" role="status">
       <strong><span class="dot"></span>Live data not connected</strong>
       <p>No professional-match headshot feed or permitted PrizePicks line feed has been verified yet. Missing numbers are intentionally not shown as zeros or guesses.</p>
@@ -171,6 +180,67 @@
         container.append(item);
       }
     }
+    // Search all known identities locally. GitHub Pages cannot make BO3
+    // cross-origin requests: the API did NOT allow this website's Origin.
+    // A search hit without verified map records is NOT a stats hit.
+    let allIndexedPlayers=null;
+    let indexedAt="";
+    function renderAllPlayers(term=""){
+      const box=$("all-player-results");box.replaceChildren();
+      if(allIndexedPlayers===null){
+        box.className="empty";box.textContent="Player index not ready yet.";return;
+      }
+      const q=term.trim().toLocaleLowerCase();
+      if(!q){box.className="empty";box.textContent="Type a player nickname to search the index.";return;}
+      const matches=allIndexedPlayers.filter(p=>p.name.toLocaleLowerCase().includes(q));
+      matches.sort((a,b)=>{
+        const ea=a.name.toLocaleLowerCase()===q,eb=b.name.toLocaleLowerCase()===q;
+        return Number(eb)-Number(ea)||a.name.localeCompare(b.name)||a.id-b.id;
+      });
+      const shown=matches.slice(0,50);
+      box.className="";
+      const count=document.createElement("p");count.className="muted";
+      count.textContent=matches.length+" nickname matches"+(matches.length>50?" · showing first 50; type more to narrow":"");
+      box.append(count);
+      if(!shown.length){box.className="empty";box.append(document.createTextNode("No matching nickname in this source index."));return;}
+      for(const p of shown){
+        const item=document.createElement("article");item.className="player";
+        const title=document.createElement("h3");title.textContent=p.name;
+        const label=document.createElement("p");label.className="muted";
+        label.textContent="BO3 player ID "+p.id+(p.team_id?" · team ID "+p.team_id:" · team not listed");
+        item.append(title,label);
+        if(p.id===49750){
+          const link=document.createElement("a");link.href="#phoebe-research";
+          link.textContent="See saved phoebe headshot research ↓";item.append(link);
+        }else{
+          const status=document.createElement("div");status.className="meta";
+          status.textContent="Map 1+2 history: not collected · PrizePicks line: unavailable";
+          item.append(status);
+        }
+        box.append(item);
+      }
+    }
+    $("all-search").addEventListener("input",e=>renderAllPlayers(e.target.value));
+    (async()=>{
+      try{
+        const res=await fetch("./data/bo3_players.json",{cache:"no-store"});
+        if(!res.ok)throw Error("HTTP "+res.status);
+        const data=await res.json();
+        if(data.kind!=="identity_index_not_headshot_feed"||data.complete!==true||
+           !Array.isArray(data.players)||typeof data.retrieved_at!=="string")
+          throw Error("Unexpected player index");
+        allIndexedPlayers=data.players.filter(p=>p&&typeOfId(p.id)&&typeof p.name==="string"&&p.name.length>0);
+        text($("index-info"),allIndexedPlayers.length.toLocaleString()+
+             " CS2 identities indexed · refreshed "+data.retrieved_at.slice(0,10)+
+             ". Search by nickname; per-map analysis requires separate verified records.");
+        renderAllPlayers($("all-search").value);
+      }catch(error){
+        allIndexedPlayers=null;
+        text($("index-info"),"Player index not available.");
+        $("all-player-results").textContent="Search index could not be loaded: "+error.message;
+      }
+    })();
+    function typeOfId(id){return Number.isSafeInteger(id)&&id>0;}
     // A one-time, independently visible researched record, separate from live.
     (async()=>{
       try{
