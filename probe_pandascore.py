@@ -70,6 +70,29 @@ def main():
     else:
         print("OUTCOME: check the player's team and identity before linking fixtures.")
     print("This is NOT a headshot history test. Historical player stats require plan access.")
+    print("Checking free player match listings for IDs and possible replay references.")
+    try:
+        history = get("/players/51078/matches", {"per_page": 25, "sort": "-begin_at"})
+    except SystemExit as exc:
+        print("Player match listing unavailable: " + str(exc))
+        history = []
+    if not isinstance(history, list):
+        print("Player match listing had unexpected data type.")
+        history = []
+    print("Player match listing returned " + str(len(history)) + " matches.")
+    for m in history[:20]:
+        if not isinstance(m, dict):
+            continue
+        opponents = [str(x.get("opponent", {}).get("name", "?"))
+                     for x in m.get("opponents", [])
+                     if isinstance(x, dict) and isinstance(x.get("opponent"), dict)]
+        links = sorted({key for key in m if "demo" in key.casefold() or "replay" in key.casefold()})
+        print("  match id=" + str(m.get("id")) +
+              " date=" + str(m.get("begin_at")) +
+              " status=" + str(m.get("status")) +
+              " opponents=" + ",".join(opponents)[:120] +
+              " demo/replay fields=" + str(links))
+    print("Fixture listings are NOT demo downloads or per-map headshot counts.")
 
 
 if __name__ == "__main__":
