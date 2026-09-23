@@ -82,6 +82,14 @@
     </section>
 
 
+    <section class="panel" aria-label="Verified phoebe research history" id="phoebe-research">
+      <div class="section"><h2>phoebe · real headshot history</h2><span class="badge">RESEARCH SNAPSHOT</span></div>
+      <p class="muted" id="phoebe-info">Loading first verified 20-series example…</p>
+      <p class="muted">A one-time source-checked research snapshot, not an automatic live feed. Its 20 complete Map 1+2 series exclude matches without valid data, and may NOT be the player's last 20 matches played. Historical rates are not forecasts.</p>
+      <div class="manual-result" id="phoebe-results" aria-live="polite">Loading…</div>
+      <div id="phoebe-history"></div>
+      <p class="muted" id="phoebe-source"></p>
+    </section>
     <section class="panel" aria-label="Manual headshot comparison" id="calculator">
       <div class="section"><h2>Headshot comparison</h2><span class="badge">MANUAL INPUT</span></div>
       <p class="muted">Works right now with real results you enter. No auto-feed, and nothing here claims a current PrizePicks line. Keep matches newest first; each number must be a completed series' Map 1 + Map 2 headshots.</p>
@@ -96,7 +104,7 @@
     <section class="panel" aria-label="Screenshot test case" id="board-test">
       <div class="section"><h2>PrizePicks screenshot test</h2><span class="badge">NOT LIVE</span></div>
       <p class="muted" id="board-info">Loading the saved test case…</p>
-      <p class="muted">These lines were copied from your September 22 screenshot, not collected from a PrizePicks feed. They may have changed or expired. Player links identify the right professional player; verified last-20 headshot totals are still missing.</p>
+      <p class="muted">These lines were copied from your September 22 screenshot, not collected from a PrizePicks feed. They may have changed or expired. Player links identify the right professional player. A separate, one-time 20-series research example is shown above for phoebe; the live and full-player feeds are still missing.</p>
       <label for="board-search" class="muted">Find a player from that screenshot</label>
       <input id="board-search" type="search" placeholder="Try phoebe" autocomplete="off">
       <div id="board-players" class="empty" aria-live="polite">Loading screenshot players…</div>
@@ -163,6 +171,65 @@
         container.append(item);
       }
     }
+    // A one-time, independently visible researched record, separate from live.
+    (async()=>{
+      try{
+        const rsp=await fetch("./data/phoebe_research.json",{cache:"no-store"});
+        if(!rsp.ok)throw Error("HTTP "+rsp.status);
+        const data=await rsp.json();
+        if(data.kind!=="one_time_verified_research_sample" ||
+           data.player?.name!=="phoebe" || !Array.isArray(data.matches) ||
+           data.matches.length!==20 || Number(data.line)!==14)
+          throw Error("Invalid research payload");
+        const xs=data.matches;
+        for(let i=0;i<xs.length;i++){
+          const m=xs[i];
+          if(!Number.isInteger(m.map1)||!Number.isInteger(m.map2) ||
+             m.map1<0||m.map2<0||m.headshots!==m.map1+m.map2 ||
+             typeof m.played_at!=="string" || !Number.isFinite(Date.parse(m.played_at)) ||
+             (i>0 && m.played_at>xs[i-1].played_at))
+            throw Error("Inconsistent source match record");
+        }
+        const root=$("phoebe-results");root.replaceChildren();
+        const t=document.createElement("table"),hd=document.createElement("thead"),hr=document.createElement("tr");
+        for(const label of ["Window","Avg","Over","Under","Push"]){
+          const cell=document.createElement("th");cell.textContent=label;hr.append(cell);
+        }
+        hd.append(hr);t.append(hd);
+        const body=document.createElement("tbody");
+        for(const n of [10,15,20]){
+          const sub=xs.slice(0,n),total=sub.reduce((acc,m)=>acc+m.headshots,0);
+          const over=sub.filter(m=>m.headshots>data.line).length;
+          const under=sub.filter(m=>m.headshots<data.line).length;
+          const tr=document.createElement("tr");
+          for(const value of ["L"+n,(total/n).toFixed(2),over,under,n-over-under]){
+            const td=document.createElement("td");td.textContent=String(value);tr.append(td);
+          }
+          body.append(tr);
+        }
+        t.append(body);root.append(t);
+        text($("phoebe-info"),"Saved line: "+data.line+" Maps 1–2 headshots · "+
+             xs.length+" complete source-backed series · newest match "+
+             xs[0].played_at.slice(0,10)+" · research retrieved "+
+             data.retrieved_at.slice(0,10)+". NOT LIVE.");
+        const history=$("phoebe-history");history.replaceChildren();
+        for(const m of xs){
+          const p=document.createElement("p");p.className="muted";
+          p.textContent=m.played_at.slice(0,10)+" · "+m.team+" · M1 "+m.map1+
+                        " + M2 "+m.map2+" = "+m.headshots+" HS";
+          history.append(p);
+        }
+        const source=$("phoebe-source");source.replaceChildren(document.createTextNode("Source: "));
+        for(const [url,label] of [[data.source_url,"BO3.gg player page"],[data.test_run_url,"GitHub verification"]]){
+          if(typeof url!=="string"||!/^https:\\/\\//.test(url))continue;
+          const a=document.createElement("a");a.href=url;a.textContent=label+" ↗";
+          a.target="_blank";a.rel="noopener noreferrer";source.append(a,document.createTextNode(" · "));
+        }
+      }catch(error){
+        text($("phoebe-info"),"Verified research example unavailable.");
+        text($("phoebe-results"),"No results displayed: "+error.message);
+      }
+    })();
     // Fallback research calculator; user-entered data is NOT a verified live feed.
     function calculateManual(lineText,historyText){
       const line=Number(lineText);
