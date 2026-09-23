@@ -1,0 +1,39 @@
+name: Verify automatic CS2 search
+on:
+  push:
+    paths: ["server-app/**", ".github/workflows/instant-search.yml"]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    defaults:
+      run:
+        working-directory: server-app
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check source identity and calculations
+        run: |
+          node --test tests/api.test.mjs
+          node --test tests/test_analysis.cjs
+      - name: Build server with existing saved history
+        run: |
+          cp -r ../data public/data
+          node build.mjs
+      - name: Install browser test driver
+        run: npm install --no-save --no-package-lock playwright@1.63.0
+      - name: Verify a real uncached player and repeat search
+        run: |
+          CS2_CHROME_BIN="$(command -v google-chrome || true)"
+          if [ -n "$CS2_CHROME_BIN" ]; then
+            export CS2_CHROME_BIN
+          else
+            npx playwright install --with-deps chromium
+          fi
+          node tests/browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: automatic-search-check
+          path: server-app/test-results/
