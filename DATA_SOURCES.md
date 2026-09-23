@@ -176,3 +176,38 @@ or ask the user to move the 784.5 MB HLTV RAR to iCloud. The next
 meaningful milestone is provider authorization *and* a real per-map
 headshot record *and* a real current line, verified as fresh; otherwise
 keep unavailable fields unavailable.
+
+## September 22 source-feasibility recheck
+
+Verified public provider contracts and product docs before treating this as
+an automated PrizePicks comparison product:
+
+- PandaScore free Fixtures gives IDs, rosters, fixtures, not per-map
+  headshot statistics. https://developers.pandascore.co/docs/plan-reference
+- PandaScore's general terms, sections 2.8 and 6.4, also restrict using
+  subscribed data to develop or distribute odds or odds-related products
+  and services. Whether this fantasy-line comparison constitutes that
+  restricted use requires PandaScore's authorization. **Do not launch a
+  PandaScore-powered PrizePicks analysis or redistribute the raw feed
+  under an assumed license.**
+  https://www.pandascore.co/terms-and-condition
+- EsportsOdds has per-map headshot fields when available, but its
+  market line is NOT a specific PrizePicks prop, and its published
+  price is $99/month with a card-required seven-day trial.
+  https://docs.esportsodds.gg/docs/cs2-data/match-stats
+  https://esportsodds.gg/pricing
+- KashRock publishes marketing claims for a free API containing
+  CS2 PrizePicks props and 30-day gamelogs but requires its own
+  signup/key; current coverage, exact Map 1+2 headshot history,
+  uptime, provenance and free-tier rights remain UNVERIFIED.
+  https://www.kashrock.com/docs/mcp
+- PrizePicks has not published a supported public developer API for
+  full automatic projection retrieval. Its current terms govern the
+  third-party use of its services and contents.
+  https://www.prizepicks.com/help-center/terms-of-service
+
+Acceptance gate remains: one permitted current board line + last
+20 complete tournament match headshot totals from an authorized feed,
+matched by player ID and team, timestamped and refreshed automatically
+with $0 recurring charge. This gate has NOT passed. No synthetic live
+numbers or fake "completed" state on the website.
