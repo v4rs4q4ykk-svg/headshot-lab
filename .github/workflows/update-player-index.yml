@@ -33,5 +33,6 @@ jobs:
             echo "No index changes"
           else
             git commit -m "Refresh CS2 player search index (identity only)"
+            git pull --rebase origin main
             git push
           fi
