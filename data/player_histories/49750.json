@@ -5,7 +5,7 @@
   "bo3_profile_id": "16154",
   "nickname": "phoebe",
   "source": "BO3.gg public per-game player stats (research access; reuse rights unverified)",
-  "retrieved_at": "2026-09-23T14:36:00.006607+00:00",
+  "retrieved_at": "2026-09-23T14:42:36.071884+00:00",
   "candidates_checked": 40,
   "excluded_checked": 2,
   "matches": [
@@ -13,7 +13,10 @@
       "id": 130569,
       "played_at": "2026-09-23T09:30:00.000+00:00",
       "team": "Mindfreak",
-      "opponent": null,
+      "opponent": {
+        "id": 151,
+        "name": "Rooster"
+      },
       "maps": [
         {
           "name": "de_nuke",
@@ -32,7 +35,10 @@
       "id": 127697,
       "played_at": "2026-08-29T09:15:00.000+00:00",
       "team": "Mindfreak",
-      "opponent": null,
+      "opponent": {
+        "id": 4175,
+        "name": "Arcade"
+      },
       "maps": [
         {
           "name": "de_nuke",
@@ -51,7 +57,10 @@
       "id": 127693,
       "played_at": "2026-08-28T09:20:00.000+00:00",
       "team": "Mindfreak",
-      "opponent": null,
+      "opponent": {
+        "id": 22032,
+        "name": "THUNDER dOWNUNDER"
+      },
       "maps": [
         {
           "name": "de_inferno",
@@ -70,7 +79,10 @@
       "id": 126067,
       "played_at": "2026-08-12T10:00:00.000+00:00",
       "team": "Mindfreak",
-      "opponent": null,
+      "opponent": {
+        "id": 584,
+        "name": "Ground Zero"
+      },
       "maps": [
         {
           "name": "de_inferno",
@@ -89,7 +101,10 @@
       "id": 126065,
       "played_at": "2026-08-11T10:00:00.000+00:00",
       "team": "Mindfreak",
-      "opponent": null,
+      "opponent": {
+        "id": 151,
+        "name": "Rooster"
+      },
       "maps": [
         {
           "name": "de_inferno",
@@ -108,7 +123,10 @@
       "id": 126063,
       "played_at": "2026-08-10T10:10:00.000+00:00",
       "team": "Mindfreak",
-      "opponent": null,
+      "opponent": {
+        "id": 584,
+        "name": "Ground Zero"
+      },
       "maps": [
         {
           "name": "de_nuke",
@@ -127,7 +145,10 @@
       "id": 126057,
       "played_at": "2026-08-07T10:10:00.000+00:00",
       "team": "Mindfreak",
-      "opponent": null,
+      "opponent": {
+        "id": 529,
+        "name": "FURY"
+      },
       "maps": [
         {
           "name": "de_mirage",
@@ -146,7 +167,10 @@
       "id": 126055,
       "played_at": "2026-08-04T10:09:26.000+00:00",
       "team": "Mindfreak",
-      "opponent": null,
+      "opponent": {
+        "id": 25014,
+        "name": "Finishers"
+      },
       "maps": [
         {
           "name": "de_mirage",
@@ -165,7 +189,10 @@
       "id": 126053,
       "played_at": "2026-08-03T10:20:00.000+00:00",
       "team": "Mindfreak",
-      "opponent": null,
+      "opponent": {
+        "id": 529,
+        "name": "FURY"
+      },
       "maps": [
         {
           "name": "de_anubis",
@@ -184,7 +211,10 @@
       "id": 124159,
       "played_at": "2026-07-18T03:30:00.000+00:00",
       "team": "MindFreak",
-      "opponent": null,
+      "opponent": {
+        "id": 584,
+        "name": "Ground Zero"
+      },
       "maps": [
         {
           "name": "de_inferno",
@@ -203,7 +233,10 @@
       "id": 124158,
       "played_at": "2026-07-18T00:00:00.000+00:00",
       "team": "MindFreak",
-      "opponent": null,
+      "opponent": {
+        "id": 10398,
+        "name": "FlyQuest"
+      },
       "maps": [
         {
           "name": "de_nuke",
@@ -222,7 +255,10 @@
       "id": 124151,
       "played_at": "2026-07-17T10:10:00.000+00:00",
       "team": "MindFreak",
-      "opponent": null,
+      "opponent": {
+        "id": 151,
+        "name": "Rooster"
+      },
       "maps": [
         {
           "name": "de_nuke",
@@ -241,7 +277,10 @@
       "id": 124149,
       "played_at": "2026-07-17T03:13:26.000+00:00",
       "team": "MindFreak",
-      "opponent": null,
+      "opponent": {
+        "id": 22732,
+        "name": "Abyssal"
+      },
       "maps": [
         {
           "name": "de_nuke",
@@ -260,7 +299,10 @@
       "id": 122982,
       "played_at": "2026-06-26T18:00:00.000+00:00",
       "team": "Shimmer",
-      "opponent": null,
+      "opponent": {
+        "id": 2456,
+        "name": "MIBR fe"
+      },
       "maps": [
         {
           "name": "de_ancient",
@@ -279,7 +321,10 @@
       "id": 122979,
       "played_at": "2026-06-23T23:55:59.000+00:00",
       "team": "Shimmer",
-      "opponent": null,
+      "opponent": {
+        "id": 9442,
+        "name": "Atrix"
+      },
       "maps": [
         {
           "name": "de_ancient",
@@ -298,7 +343,10 @@
       "id": 118527,
       "played_at": "2026-04-29T09:00:00.000+00:00",
       "team": "low cortisol gaming",
-      "opponent": null,
+      "opponent": {
+        "id": 22505,
+        "name": "Ding Cuts"
+      },
       "maps": [
         {
           "name": "de_inferno",
@@ -317,7 +365,10 @@
       "id": 118525,
       "played_at": "2026-04-28T09:10:00.000+00:00",
       "team": "low cortisol gaming",
-      "opponent": null,
+      "opponent": {
+        "id": 22031,
+        "name": "Time Waves"
+      },
       "maps": [
         {
           "name": "de_ancient",
@@ -336,7 +387,10 @@
       "id": 118524,
       "played_at": "2026-04-27T09:00:00.000+00:00",
       "team": "low cortisol gaming",
-      "opponent": null,
+      "opponent": {
+        "id": 22032,
+        "name": "THUNDER dOWNUNDER"
+      },
       "maps": [
         {
           "name": "de_anubis",
@@ -355,7 +409,10 @@
       "id": 105348,
       "played_at": "2025-12-07T04:40:00.000+00:00",
       "team": "Animus Victoria",
-      "opponent": null,
+      "opponent": {
+        "id": 151,
+        "name": "Rooster"
+      },
       "maps": [
         {
           "name": "de_overpass",
@@ -374,7 +431,10 @@
       "id": 105342,
       "played_at": "2025-12-07T01:18:34.000+00:00",
       "team": "Animus Victoria",
-      "opponent": null,
+      "opponent": {
+        "id": 529,
+        "name": "FURY"
+      },
       "maps": [
         {
           "name": "de_nuke",
