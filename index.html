@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#101218">
+  <meta name="description" content="Headshot Lab: CS2 professional match headshot research.">
+  <title>Headshot Lab · CS2</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <style>
+    :root { color-scheme: dark; font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; background:#101218;color:#f0f2f7; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; }
+    header,main,footer { max-width:920px;margin:auto; padding:0 18px; }
+    header { padding-top:32px; padding-bottom:23px;display:flex;align-items:center;justify-content:space-between;gap:12px; }
+    .brand {font-size:1.35rem;font-weight:850;letter-spacing:.05em;}
+    .eyebrow {font-size:.69rem;letter-spacing:.15em;color:#a4afc4;text-transform:uppercase;}
+    h1 {font-size:clamp(1.6rem,6vw,2.5rem);margin:0 0 8px;}
+    p {line-height:1.55;color:#b8c1d0;}
+    .badge {border-radius:20px;background:#3c3019;color:#ffd68c;font-size:.7rem;font-weight:750;white-space:nowrap;padding:8px 11px;border:1px solid #6b5426;}
+    .panel {background:#1a1e29;border:1px solid #30384a;border-radius:17px;padding:20px;margin:0 0 15px;}
+    .intro {padding-top:25px;padding-bottom:25px;background:linear-gradient(140deg,#1b2435,#191d29);}
+    .chip {display:inline-block;font-size:.74rem;color:#9fb7ff;background:#24314d;border-radius:20px;padding:6px 10px;margin-bottom:16px;}
+    .facts {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:15px;}
+    .fact {padding:15px;background:#1a1e29;border:1px solid #30384a;border-radius:14px;}
+    .fact small {display:block;color:#a9b4c9;font-size:.7rem;}
+    .fact strong {font-size:1.4rem;display:block;margin-top:7px;}
+    .muted {color:#a9b4c9; font-size:.86rem;}
+    .warning {border-color:#76562a;background:#282217;color:#ffe5ab;}
+    .warning p {color:#e8d7ad;margin:9px 0 0;}
+    .warning strong{color:#fff4d5;}
+    .section {display:flex;justify-content:space-between;align-items:center;gap:10px;}
+    .section h2 {font-size:1.1rem;margin:0 0 12px;}
+    input {width:100%;background:#0d1017;border:1px solid #414b60;color:white;border-radius:10px;padding:13px 14px;font-size:1rem;margin-bottom:12px;}
+    input:focus {outline:2px solid #739bfa;}
+    .player {padding:14px 0;border-top:1px solid #313949;}
+    .player:first-child {border-top:0;}
+    .player h3 {font-size:1rem;margin:0 0 3px;}
+    .player .meta {color:#aeb9cc;font-size:.8rem;}
+    .stats {display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+    .stat {border-radius:9px;background:#222b3d;padding:8px 10px;font-size:.8rem;}
+    .empty {text-align:center;padding:32px 10px;color:#c5cfde;}
+    .empty strong {display:block;color:#f3f5fa;margin-bottom:7px;}
+    .dot {width:9px;height:9px;background:#f7ba58;border-radius:50%;display:inline-block;margin-right:6px;}
+    footer {padding-top:8px;padding-bottom:35px;font-size:.75rem;color:#a6b1c4;}
+    a {color:#a2bfff;}
+    @media(min-width:700px){header{padding-top:40px}main{padding-top:4px}}
+  </style>
+</head>
+<body>
+  <header>
+    <div><div class="eyebrow">CS2 research</div><div class="brand">HEADSHOT LAB</div></div>
+    <span id="badge" class="badge">NO LIVE FEED</span>
+  </header>
+  <main>
+    <section class="panel intro">
+      <span class="chip">Maps 1 + 2 · Headshots</span>
+      <h1>Know the history.<br>Check the source.</h1>
+      <p>This is the home of your CS2 headshot tracker. Player statistics will appear here only after a real professional-match source has been verified and connected.</p>
+      <div class="muted" id="updated">Last verified update: none</div>
+    </section>
+
+    <div class="facts" aria-label="Data coverage">
+      <div class="fact"><small>Players</small><strong id="player-count">—</strong></div>
+      <div class="fact"><small>Matches</small><strong id="match-count">—</strong></div>
+      <div class="fact"><small>Projection lines</small><strong id="line-count">—</strong></div>
+    </div>
+
+    <section class="panel warning" id="notice" role="status">
+      <strong><span class="dot"></span>Live data not connected</strong>
+      <p>No professional-match headshot feed or permitted PrizePicks line feed has been verified yet. Missing numbers are intentionally not shown as zeros or guesses.</p>
+    </section>
+
+    <section class="panel" aria-label="Player history">
+      <div class="section"><h2>Player history</h2><span class="muted" id="count-label">0 available</span></div>
+      <label for="search" class="muted">Search a player or team</label>
+      <input id="search" type="search" placeholder="Search players" autocomplete="off">
+      <div id="players" class="empty" aria-live="polite">
+        <strong>No verified player records yet</strong>
+        We'll show headshots, L10/L15/L20 history, and original sources here once a real feed is connected.
+      </div>
+    </section>
+  </main>
+  <footer>Headshot Lab is a research tool. Historical rates do not predict outcomes. No affiliation with PrizePicks or tournament operators. <a href="https://github.com/v4rs4q4ykk-svg/headshot-lab">Source code</a></footer>
+  <script>
+    "use strict";
+    const $ = id => document.getElementById(id);
+    let players = [];
+    function text(node,value){node.textContent=String(value);}
+    function render(term=""){
+      const container=$("players");
+      container.replaceChildren();
+      const query=term.trim().toLowerCase();
+      const shown=players.filter(p=>[p.name,p.team].some(x=>String(x||"").toLowerCase().includes(query)));
+      text($("count-label"),shown.length+" available");
+      if(!shown.length){
+        container.className="empty";
+        const headline=document.createElement("strong");
+        headline.textContent=players.length?"No matching players":"No verified player records yet";
+        container.append(headline,document.createTextNode(players.length?"Try another search.":" We'll show headshots, L10/L15/L20 history, and original sources here once a real feed is connected."));
+        return;
+      }
+      container.className="";
+      for(const p of shown){
+        const item=document.createElement("article");item.className="player";
+        const name=document.createElement("h3");name.textContent=p.name;
+        const meta=document.createElement("div");meta.className="meta";
+        meta.textContent=[p.team,p.match_time].filter(Boolean).join(" · ");
+        const stats=document.createElement("div");stats.className="stats";
+        for(const label of ["projection","l10","l15","l20"]){
+          const n=p[label];
+          const cell=document.createElement("span");cell.className="stat";
+          cell.textContent=label.toUpperCase()+": "+(n===null||n===undefined?"unavailable":String(n));stats.append(cell);
+        }
+        item.append(name,meta,stats);
+        if(p.source_url && /^https:\/\//.test(p.source_url)){
+          const link=document.createElement("a");link.href=p.source_url;
+          link.rel="noopener noreferrer";link.target="_blank";link.textContent="Original statistics ↗";
+          item.append(link);
+        }
+        container.append(item);
+      }
+    }
+    $("search").addEventListener("input",event=>render(event.target.value));
+    (async()=>{
+      try{
+        const res=await fetch("./data/status.json",{cache:"no-store"});
+        if(!res.ok) throw new Error("HTTP "+res.status);
+        const data=await res.json();
+        if(!Array.isArray(data.players))throw new Error("Invalid player records");
+        players=data.players.filter(p=>p && typeof p.name==="string" && typeof p.player_id==="string");
+        const verified=data.live_data_connected===true && typeof data.updated_at==="string";
+        text($("badge"),verified?"DATA AVAILABLE":"NO LIVE FEED");
+        text($("updated"),"Last verified update: "+(verified?data.updated_at:"none"));
+        if(verified){
+          text($("player-count"),players.length);
+          text($("match-count"),Number.isInteger(data.match_count)?data.match_count:"—");
+          text($("line-count"),players.filter(p=>typeof p.projection==="number").length);
+          $("notice").querySelector("strong").textContent="Source connected — check update time";
+          $("notice").querySelector("p").textContent="Verify that match records and projections are recent before using historical comparisons.";
+        }
+        render($("search").value);
+      }catch(error){
+        text($("updated"),"Live data unavailable");
+        $("notice").querySelector("p").textContent="The data file could not be loaded. No player statistics are being shown. "+error.message;
+      }
+    })();
+  </script>
+</body>
+</html>
