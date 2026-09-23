@@ -226,13 +226,14 @@
         const res=await fetch("./data/bo3_players.json",{cache:"no-store"});
         if(!res.ok)throw Error("HTTP "+res.status);
         const data=await res.json();
-        if(data.kind!=="identity_index_not_headshot_feed"||data.complete!==true||
+        if(data.kind!=="identity_index_not_headshot_feed"||typeof data.complete!=="boolean"||
            !Array.isArray(data.players)||typeof data.retrieved_at!=="string")
           throw Error("Unexpected player index");
         allIndexedPlayers=data.players.filter(p=>p&&typeOfId(p.id)&&typeof p.name==="string"&&p.name.length>0);
         text($("index-info"),allIndexedPlayers.length.toLocaleString()+
-             " CS2 identities indexed · refreshed "+data.retrieved_at.slice(0,10)+
-             ". Search by nickname; per-map analysis requires separate verified records.");
+             " of "+Number(data.source_reported_count).toLocaleString()+" source identities searchable · refreshed "+data.retrieved_at.slice(0,10)+
+             (data.complete?".":" · partial index; some players missing.")+
+             " Per-map analysis requires separate verified records.");
         renderAllPlayers($("all-search").value);
       }catch(error){
         allIndexedPlayers=null;
