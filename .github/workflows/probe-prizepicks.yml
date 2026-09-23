@@ -1,0 +1,20 @@
+name: Probe public PrizePicks endpoint
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "probe_prizepicks.py"
+      - ".github/workflows/probe-prizepicks.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  one_shot_probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check bounded public endpoint (no bypass or persistent feed)
+        run: python3 probe_prizepicks.py
