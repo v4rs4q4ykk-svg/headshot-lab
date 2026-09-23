@@ -45,6 +45,16 @@
     footer {padding-top:8px;padding-bottom:35px;font-size:.75rem;color:#a6b1c4;}
     a {color:#a2bfff;}
     @media(min-width:700px){header{padding-top:40px}main{padding-top:4px}}
+
+    textarea {width:100%;min-height:125px;background:#0d1017;border:1px solid #414b60;color:white;border-radius:10px;padding:13px 14px;font-size:1rem;line-height:1.5;}
+    textarea:focus {outline:2px solid #739bfa;}
+    .tools {display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .button {background:#739bfa;color:#111827;font-weight:800;border:0;border-radius:10px;padding:12px 14px;font-size:1rem;cursor:pointer;}
+    .button:disabled {opacity:.6;cursor:not-allowed;}
+    .manual-result {margin:12px 0 4px;}
+    .manual-result table {width:100%;border-collapse:collapse;font-size:.85rem;}
+    .manual-result th,.manual-result td {padding:10px 6px;text-align:left;border-bottom:1px solid #30384a;}
+    .error {color:#ffbdc2;font-weight:600;}
   </style>
 </head>
 <body>
@@ -71,6 +81,18 @@
       <p>No professional-match headshot feed or permitted PrizePicks line feed has been verified yet. Missing numbers are intentionally not shown as zeros or guesses.</p>
     </section>
 
+
+    <section class="panel" aria-label="Manual headshot comparison" id="calculator">
+      <div class="section"><h2>Headshot comparison</h2><span class="badge">MANUAL INPUT</span></div>
+      <p class="muted">Works right now with real results you enter. No auto-feed, and nothing here claims a current PrizePicks line. Keep matches newest first; each number must be a completed series' Map 1 + Map 2 headshots.</p>
+      <label for="manual-line" class="muted">Projection line (check it yourself)</label>
+      <input id="manual-line" type="number" min="0" max="200" step="0.5" inputmode="decimal" placeholder="e.g. 14">
+      <label for="manual-history" class="muted">Series headshot totals — newest first, one number per line</label>
+      <textarea id="manual-history" placeholder="Paste your verified totals, newest first. No numbers are prefilled."></textarea>
+      <button id="analyze-manual" class="button" type="button">Calculate L10 / L15 / L20</button>
+      <div class="manual-result" id="manual-output" aria-live="polite"><span class="muted">No calculations yet.</span></div>
+      <p class="muted">Private on-device calculation: entered numbers are not uploaded or saved. An incomplete window stays marked insufficient—not zero.</p>
+    </section>
     <section class="panel" aria-label="Screenshot test case" id="board-test">
       <div class="section"><h2>PrizePicks screenshot test</h2><span class="badge">NOT LIVE</span></div>
       <p class="muted" id="board-info">Loading the saved test case…</p>
@@ -141,6 +163,59 @@
         container.append(item);
       }
     }
+    // Fallback research calculator; user-entered data is NOT a verified live feed.
+    function calculateManual(lineText,historyText){
+      const line=Number(lineText);
+      if(!lineText.trim() || !Number.isFinite(line) || line<0 || line>200)
+        throw new Error("Enter a valid nonnegative projection line.");
+      const cells=historyText.split(/[\s,;]+/).filter(Boolean);
+      if(cells.length===0)throw new Error("Enter at least one completed Map 1+2 headshot total.");
+      if(cells.length>500)throw new Error("Maximum 500 completed series.");
+      const nums=cells.map(cell=>{
+        if(!/^\d+$/.test(cell))throw new Error("Each result must be a whole, nonnegative headshot count.");
+        const n=Number(cell);
+        if(!Number.isSafeInteger(n) || n>200)throw new Error("One headshot count is out of range.");
+        return n;
+      });
+      return [10,15,20].map(n=>{
+        if(nums.length<n)return {window:n,available:nums.length,complete:false};
+        const xs=nums.slice(0,n);
+        return {window:n,complete:true,average:xs.reduce((a,b)=>a+b,0)/n,
+          over:xs.filter(x=>x>line).length,
+          under:xs.filter(x=>x<line).length,
+          push:xs.filter(x=>x===line).length};
+      });
+    }
+    $("analyze-manual").addEventListener("click",()=>{
+      const target=$("manual-output");target.replaceChildren();
+      try{
+        const results=calculateManual($("manual-line").value,$("manual-history").value);
+        const note=document.createElement("p");note.className="muted";
+        note.textContent="Entered results only. These are historical counts against the line you typed, not an outcome forecast.";
+        target.append(note);
+        const table=document.createElement("table");
+        const tr=document.createElement("tr");
+        for(const col of ["Window","Avg HS","Over","Under","Push","Over %"]){
+          const th=document.createElement("th");th.textContent=col;tr.append(th);
+        }
+        const thead=document.createElement("thead");thead.append(tr);table.append(thead);
+        const tbody=document.createElement("tbody");
+        for(const result of results){
+          const row=document.createElement("tr");
+          const values=result.complete?["L"+result.window,result.average.toFixed(2),result.over,
+              result.under,result.push,(result.over/result.window*100).toFixed(1)+"%"]:
+              ["L"+result.window,"Insufficient ("+result.available+"/"+result.window+")","—","—","—","—"];
+          for(const value of values){
+            const td=document.createElement("td");td.textContent=String(value);row.append(td);
+          }
+          tbody.append(row);
+        }
+        table.append(tbody);target.append(table);
+      }catch(e){
+        const error=document.createElement("p");error.className="error";
+        error.textContent=e.message;target.append(error);
+      }
+    });
     // A frozen user-supplied screenshot, NEVER a current PrizePicks feed.
     let screenshotPlayers=[];
     let screenshotFixture=null;
