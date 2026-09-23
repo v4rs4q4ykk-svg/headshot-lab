@@ -1,11 +1,11 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "kind": "on_demand_user_research_not_live",
   "bo3_player_id": 49750,
   "bo3_profile_id": "16154",
   "nickname": "phoebe",
   "source": "BO3.gg public per-game player stats (research access; reuse rights unverified)",
-  "retrieved_at": "2026-09-23T14:10:06.817976+00:00",
+  "retrieved_at": "2026-09-23T14:36:00.006607+00:00",
   "candidates_checked": 40,
   "excluded_checked": 2,
   "matches": [
@@ -13,6 +13,17 @@
       "id": 130569,
       "played_at": "2026-09-23T09:30:00.000+00:00",
       "team": "Mindfreak",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_nuke",
+          "rounds": 22
+        },
+        {
+          "name": "de_cache",
+          "rounds": 14
+        }
+      ],
       "map1": 11,
       "map2": 2,
       "headshots": 13
@@ -21,6 +32,17 @@
       "id": 127697,
       "played_at": "2026-08-29T09:15:00.000+00:00",
       "team": "Mindfreak",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_nuke",
+          "rounds": 22
+        },
+        {
+          "name": "de_mirage",
+          "rounds": 24
+        }
+      ],
       "map1": 4,
       "map2": 9,
       "headshots": 13
@@ -29,6 +51,17 @@
       "id": 127693,
       "played_at": "2026-08-28T09:20:00.000+00:00",
       "team": "Mindfreak",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_inferno",
+          "rounds": 21
+        },
+        {
+          "name": "de_anubis",
+          "rounds": 18
+        }
+      ],
       "map1": 4,
       "map2": 6,
       "headshots": 10
@@ -37,6 +70,17 @@
       "id": 126067,
       "played_at": "2026-08-12T10:00:00.000+00:00",
       "team": "Mindfreak",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_inferno",
+          "rounds": 19
+        },
+        {
+          "name": "de_dust2",
+          "rounds": 19
+        }
+      ],
       "map1": 2,
       "map2": 4,
       "headshots": 6
@@ -45,6 +89,17 @@
       "id": 126065,
       "played_at": "2026-08-11T10:00:00.000+00:00",
       "team": "Mindfreak",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_inferno",
+          "rounds": 22
+        },
+        {
+          "name": "de_anubis",
+          "rounds": 19
+        }
+      ],
       "map1": 4,
       "map2": 5,
       "headshots": 9
@@ -53,6 +108,17 @@
       "id": 126063,
       "played_at": "2026-08-10T10:10:00.000+00:00",
       "team": "Mindfreak",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_nuke",
+          "rounds": 23
+        },
+        {
+          "name": "de_anubis",
+          "rounds": 17
+        }
+      ],
       "map1": 8,
       "map2": 6,
       "headshots": 14
@@ -61,6 +127,17 @@
       "id": 126057,
       "played_at": "2026-08-07T10:10:00.000+00:00",
       "team": "Mindfreak",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_mirage",
+          "rounds": 21
+        },
+        {
+          "name": "de_inferno",
+          "rounds": 22
+        }
+      ],
       "map1": 8,
       "map2": 12,
       "headshots": 20
@@ -69,6 +146,17 @@
       "id": 126055,
       "played_at": "2026-08-04T10:09:26.000+00:00",
       "team": "Mindfreak",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_mirage",
+          "rounds": 17
+        },
+        {
+          "name": "de_nuke",
+          "rounds": 23
+        }
+      ],
       "map1": 4,
       "map2": 11,
       "headshots": 15
@@ -77,6 +165,17 @@
       "id": 126053,
       "played_at": "2026-08-03T10:20:00.000+00:00",
       "team": "Mindfreak",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_anubis",
+          "rounds": 20
+        },
+        {
+          "name": "de_inferno",
+          "rounds": 21
+        }
+      ],
       "map1": 10,
       "map2": 6,
       "headshots": 16
@@ -85,6 +184,17 @@
       "id": 124159,
       "played_at": "2026-07-18T03:30:00.000+00:00",
       "team": "MindFreak",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_inferno",
+          "rounds": 22
+        },
+        {
+          "name": "de_anubis",
+          "rounds": 22
+        }
+      ],
       "map1": 8,
       "map2": 9,
       "headshots": 17
@@ -93,6 +203,17 @@
       "id": 124158,
       "played_at": "2026-07-18T00:00:00.000+00:00",
       "team": "MindFreak",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_nuke",
+          "rounds": 15
+        },
+        {
+          "name": "de_inferno",
+          "rounds": 16
+        }
+      ],
       "map1": 6,
       "map2": 5,
       "headshots": 11
@@ -101,6 +222,17 @@
       "id": 124151,
       "played_at": "2026-07-17T10:10:00.000+00:00",
       "team": "MindFreak",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_nuke",
+          "rounds": 22
+        },
+        {
+          "name": "de_inferno",
+          "rounds": 30
+        }
+      ],
       "map1": 11,
       "map2": 13,
       "headshots": 24
@@ -109,6 +241,17 @@
       "id": 124149,
       "played_at": "2026-07-17T03:13:26.000+00:00",
       "team": "MindFreak",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_nuke",
+          "rounds": 19
+        },
+        {
+          "name": "de_mirage",
+          "rounds": 19
+        }
+      ],
       "map1": 10,
       "map2": 8,
       "headshots": 18
@@ -117,6 +260,17 @@
       "id": 122982,
       "played_at": "2026-06-26T18:00:00.000+00:00",
       "team": "Shimmer",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_ancient",
+          "rounds": 22
+        },
+        {
+          "name": "de_nuke",
+          "rounds": 46
+        }
+      ],
       "map1": 2,
       "map2": 22,
       "headshots": 24
@@ -125,6 +279,17 @@
       "id": 122979,
       "played_at": "2026-06-23T23:55:59.000+00:00",
       "team": "Shimmer",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_ancient",
+          "rounds": 19
+        },
+        {
+          "name": "de_dust2",
+          "rounds": 24
+        }
+      ],
       "map1": 7,
       "map2": 11,
       "headshots": 18
@@ -133,6 +298,17 @@
       "id": 118527,
       "played_at": "2026-04-29T09:00:00.000+00:00",
       "team": "low cortisol gaming",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_inferno",
+          "rounds": 21
+        },
+        {
+          "name": "de_mirage",
+          "rounds": 24
+        }
+      ],
       "map1": 6,
       "map2": 10,
       "headshots": 16
@@ -141,6 +317,17 @@
       "id": 118525,
       "played_at": "2026-04-28T09:10:00.000+00:00",
       "team": "low cortisol gaming",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_ancient",
+          "rounds": 17
+        },
+        {
+          "name": "de_inferno",
+          "rounds": 34
+        }
+      ],
       "map1": 7,
       "map2": 14,
       "headshots": 21
@@ -149,6 +336,17 @@
       "id": 118524,
       "played_at": "2026-04-27T09:00:00.000+00:00",
       "team": "low cortisol gaming",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_anubis",
+          "rounds": 16
+        },
+        {
+          "name": "de_ancient",
+          "rounds": 18
+        }
+      ],
       "map1": 6,
       "map2": 9,
       "headshots": 15
@@ -157,6 +355,17 @@
       "id": 105348,
       "played_at": "2025-12-07T04:40:00.000+00:00",
       "team": "Animus Victoria",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_overpass",
+          "rounds": 20
+        },
+        {
+          "name": "de_mirage",
+          "rounds": 23
+        }
+      ],
       "map1": 3,
       "map2": 10,
       "headshots": 13
@@ -165,6 +374,17 @@
       "id": 105342,
       "played_at": "2025-12-07T01:18:34.000+00:00",
       "team": "Animus Victoria",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_nuke",
+          "rounds": 20
+        },
+        {
+          "name": "de_train",
+          "rounds": 20
+        }
+      ],
       "map1": 6,
       "map2": 9,
       "headshots": 15
