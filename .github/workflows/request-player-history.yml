@@ -1,9 +1,11 @@
 name: Research requested CS2 player
 
 on:
-  workflow_dispatch:
   issues:
     types: [opened]
+  push:
+    paths:
+      - ".github/workflows/request-player-history.yml"
 
 permissions:
   issues: read
@@ -11,43 +13,33 @@ permissions:
 
 jobs:
   research:
-    if: ${{ github.event.issue.user.login == github.repository_owner && startsWith(github.event.issue.title, 'Headshot history request: ') }}
+    if: github.event_name == 'issues'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-      - name: Parse strict issue title and name
-        id: parse
+      - name: Validate issue
+        id: request
         env:
           ISSUE_TITLE: ${{ github.event.issue.title }}
           ISSUE_BODY: ${{ github.event.issue.body }}
-        run: |
-          python3 - <<'PY'
-          import os,re
-          title=os.environ['ISSUE_TITLE']
-          body=os.environ.get('ISSUE_BODY','')
-          match=re.fullmatch(r'Headshot history request: ([1-9][0-9]{0,7})',title)
-          name=re.fullmatch(r'Nickname: ([^\r\n<>]{1,90})\s*',body)
-          if not match or not name:
-              raise SystemExit('Invalid bounded research request')
-          with open(os.environ['GITHUB_OUTPUT'],'a') as o:
-              print('id='+match.group(1),file=o)
-              print('nickname='+name.group(1).strip(),file=o)
-          PY
-      - name: Research bounded maps from public source
+          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+          REPO_OWNER: ${{ github.repository_owner }}
+        run: python3 request_history_issue.py
+      - name: Research player
         env:
-          PLAYER_ID: ${{ steps.parse.outputs.id }}
-          PLAYER_NAME: ${{ steps.parse.outputs.nickname }}
+          PLAYER_ID: ${{ steps.request.outputs.id }}
+          PLAYER_NAME: ${{ steps.request.outputs.nickname }}
         run: python3 fetch_player_history.py --id "$PLAYER_ID" --name "$PLAYER_NAME"
-      - name: Publish the one requested player
+      - name: Publish one requested player
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/player_histories/
           if git diff --cached --quiet; then
-            echo "No research data changed"
+            echo "No new research data"
           else
-            git commit -m "Add requested CS2 headshot research"
+            git commit -m "Add one requested CS2 research record"
             git pull --rebase origin main
             git push
           fi
