@@ -10,7 +10,8 @@ class MatchupResearchTests(unittest.TestCase):
         match = {
             "id": 73, "game_version": 2, "status": "finished",
             "start_date": "2026-09-20T12:00:00Z",
-            "teams": [{"id": 11, "name": "Own"}, {"id": 22, "name": "Other"}],
+            "team1": {"id": 11, "name": "Own"},
+            "team2": {"id": 22, "name": "Other"},
             "games": [
                 {"id": 101, "number": 1, "status": "finished", "rounds_count": 24, "map_name": "de_nuke"},
                 {"id": 102, "number": 2, "status": "finished", "rounds_count": 30, "map_name": "de_mirage"},
@@ -40,6 +41,13 @@ class MatchupResearchTests(unittest.TestCase):
         self.assertIsNone(research.opponent_identity({"teams": [{"name": "One"}]}, "One"))
         self.assertIsNone(research.map_identity({"map_name": None}))
         self.assertIsNone(research.map_identity({"map_name": "<script>"}))
+
+    def test_team1_team2_alias_from_source(self):
+        match = {"team1": {"id": 1430, "name": "Imperial", "team_clans": [
+                     {"clan_name": "Gamdom Imperial"}]},
+                 "team2": {"id": 5701, "name": "Opponent"}}
+        self.assertEqual(research.opponent_identity(match, "Gamdom Imperial"),
+                         {"id": 5701, "name": "Opponent"})
 
 
 if __name__ == "__main__":
