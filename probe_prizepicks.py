@@ -8,7 +8,7 @@ import json
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
-URL = "https://partner-api.prizepicks.com/projections?per_page=1000"
+URL = "https://partner-api.prizepicks.com/projections?per_page=100"
 
 
 def inspect(payload):
@@ -40,7 +40,7 @@ def inspect(payload):
         if "headshot" in stat.casefold():
             headshots.append(point)
     print("JSON response format: valid.")
-    print(f"Total projections in returned page: {total}")
+    print(f"Total projections in sampled page: {total}")
     print(f"Identified CS2/CSGO projections: {len(cs2)}")
     print(f"Identified CS2 headshot projections: {len(headshots)}")
     for p in headshots[:5]:
