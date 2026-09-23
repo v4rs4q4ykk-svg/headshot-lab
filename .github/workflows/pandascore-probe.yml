@@ -2,6 +2,10 @@ name: Check PandaScore player identity
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - 'probe_pandascore.py'
+      - '.github/workflows/pandascore-probe.yml'
 
 permissions:
   contents: read
