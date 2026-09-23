@@ -1,0 +1,19 @@
+name: Check BO3 browser access
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "probe_bo3_cors.py"
+      - ".github/workflows/probe-bo3-cors.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  cors:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 probe_bo3_cors.py
