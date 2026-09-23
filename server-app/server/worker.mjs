@@ -11,7 +11,7 @@ export default {async fetch(request,env,ctx){
    if(!positive(id)||!Number.isInteger(offset)||offset<0||offset>50||offset%10)return json({message:'Invalid player or page.'},400);
    const encoder=new TextEncoder(),controller=new AbortController();
    const stream=new ReadableStream({start(c){const send=x=>{try{c.enqueue(encoder.encode(JSON.stringify(x)+'\n'));}catch{controller.abort();}};
-    const run=historyBatch(new Client({signal:controller.signal}),id,offset,send).then(result=>send({type:'done',...result})).catch(e=>send({type:'error',message:e.message})).finally(()=>{try{c.close();}catch{}});ctx?.waitUntil?.(run);},cancel(){controller.abort();}});
+    const run=historyBatch(new Client({signal:controller.signal}),id,offset,send).then(result=>send({type:'done',...result})).catch(e=>{console.error('History load failed',{player_id:id,offset,message:e.message});send({type:'error',message:e instanceof SourceError?e.message:'Could not load stats. Please retry.'});}).finally(()=>{try{c.close();}catch{}});ctx?.waitUntil?.(run);},cancel(){controller.abort();}});
    return new Response(stream,{headers:{'Content-Type':'application/x-ndjson','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
   }
   if(p==='/api/matchup'&&request.method==='POST'){

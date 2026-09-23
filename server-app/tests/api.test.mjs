@@ -22,3 +22,19 @@ test('a blocked source stops subsequent requests and missing maps are excluded',
  const fetcher=async url=>Response.json(new URL(url).pathname.endsWith('/matches')?{results:[{id:12,slug:'test-match'}]}:{...match,games:[match.games[0]]});const result=await historyBatch(new Client({cache:null,fetcher}),123,0);assert.equal(result.matches.length,0);assert.equal(result.excluded.length,1);
 });
 test('rejects arbitrary player IDs and out-of-range pagination',async()=>{await assert.rejects(historyBatch(new Client(),-1,0),/Invalid/);await assert.rejects(historyBatch(new Client(),123,60),/Invalid/);});
+test('restricted default cache never blocks history and named cache is reused',async()=>{
+ const previous=Object.getOwnPropertyDescriptor(globalThis,'caches');let defaultReads=0,opens=0,calls=0;
+ const map=new Map(),cache={async match(r){return map.get(r.url)?.clone();},async put(r,v){map.set(r.url,v.clone());}};
+ Object.defineProperty(globalThis,'caches',{configurable:true,value:{get default(){defaultReads++;throw Error('This Worker is not permitted to access the default cache.');},async open(name){opens++;assert.equal(name,'headshot-public-source-v1');return cache;}}});
+ const fetcher=async url=>{calls++;const p=new URL(url).pathname;return Response.json(p.endsWith('/matches')?{results:[{id:12,slug:'test-match'}]}:p.endsWith('/matches/test-match')?match:{results:[stat(6)]});};
+ try{const result=await historyBatch(new Client({fetcher}),123,0);assert.equal(result.matches[0].headshots,12);await historyBatch(new Client({fetcher}),123,0);assert.equal(calls,4);assert.equal(defaultReads,0);assert.equal(opens,2);}
+ finally{if(previous)Object.defineProperty(globalThis,'caches',previous);else delete globalThis.caches;}
+});
+test('cache opening, reading and writing failures preserve valid source data',async()=>{
+ const previous=Object.getOwnPropertyDescriptor(globalThis,'caches');
+ Object.defineProperty(globalThis,'caches',{configurable:true,value:{open(){throw Error('Cache unavailable');}}});
+ try{
+  const cases=[undefined,{match(){throw Error('Read denied');},put(){throw Error('Write denied');}},{async match(){throw Error('Read rejected');}},{async match(){},put(){throw Error('Write denied');}},{async match(){},async put(){throw Error('Write rejected');}},{async match(){return new Response('bad JSON');}}];
+  for(let i=0;i<cases.length;i++){let calls=0;const c=new Client({cache:cases[i],fetcher:async()=>{calls++;return Response.json({headshots:17});}});assert.deepEqual(await c.get('/cache-failure-'+i),{headshots:17});assert.equal(calls,1);}
+ }finally{if(previous)Object.defineProperty(globalThis,'caches',previous);else delete globalThis.caches;}
+});

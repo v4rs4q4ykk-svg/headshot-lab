@@ -8,12 +8,20 @@ export class SourceError extends Error{constructor(message,status=502){super(mes
 const inflight=new Map();let active=0;const waiting=[];
 async function slot(fn){if(active>=4)await new Promise(r=>waiting.push(r));active++;try{return await fn();}finally{active--;waiting.shift()?.();}}
 export class Client{
- constructor({fetcher=fetch,cache=globalThis.caches?.default,signal}={}){this.fetcher=fetcher;this.cache=cache;this.signal=signal;this.calls=0;this.blocked=null;}
+ constructor({fetcher=fetch,cache,signal}={}){this.fetcher=fetcher;this.cachePromise=cache===undefined?null:Promise.resolve(cache);this.signal=signal;this.calls=0;this.blocked=null;}
+ async sourceCache(){
+  // Namespaced Workers cannot access caches.default. The named cache is an
+  // optional optimization: opening, reading or writing it must never stop data.
+  if(!this.cachePromise)this.cachePromise=(async()=>{try{return await globalThis.caches?.open?.('headshot-public-source-v1')??null;}catch{return null;}})();
+  return this.cachePromise;
+ }
  async get(path,params={},ttl=300,transform=x=>x){
   if(this.signal?.aborted)throw new SourceError('Search cancelled.',499);
   if(this.blocked)throw this.blocked;
   const url=new URL(BASE+path);Object.keys(params).sort().forEach(k=>url.searchParams.set(k,String(params[k])));
-  const key=new Request(url.href);const hit=await this.cache?.match(key);if(hit)return hit.json();
+  const key=new Request(url.href);let cache=await this.sourceCache();
+  try{const hit=await cache?.match(key);if(hit)return await hit.json();}
+  catch{cache=null;this.cachePromise=Promise.resolve(null);}
   if(inflight.has(url.href))return inflight.get(url.href);
   const task=slot(async()=>{
    if(this.blocked)throw this.blocked;
@@ -25,7 +33,7 @@ export class Client{
     if(!response.ok){const e=new SourceError(response.status===429?'The stats source is busy. Try again shortly.':'Stats source returned HTTP '+response.status+'.',response.status===429?429:502);if([401,403,429].includes(response.status))this.blocked=e;throw e;}
     const body=await response.text();if(body.length>5_000_000)throw new SourceError('Source response is too large.');
     let value;try{value=transform(JSON.parse(body));}catch{throw new SourceError('The stats source returned an unreadable response.');}
-    if(this.cache)await this.cache.put(key,new Response(JSON.stringify(value),{headers:{'Content-Type':'application/json','Cache-Control':'public, max-age='+ttl}})).catch(()=>{});
+    if(cache){try{await cache.put(key,new Response(JSON.stringify(value),{headers:{'Content-Type':'application/json','Cache-Control':'public, max-age='+ttl}}));}catch{this.cachePromise=Promise.resolve(null);}}
     return value;
    }catch(e){if(e instanceof SourceError)throw e;throw new SourceError(controller.signal.aborted?'The stats source took too long. Please retry.':'Could not connect to the stats source.');}
    finally{clearTimeout(timeout);this.signal?.removeEventListener('abort',cancel);}
