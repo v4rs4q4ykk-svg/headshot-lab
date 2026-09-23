@@ -1,0 +1,20 @@
+name: Verify phoebe 20 matches
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "probe_bo3_20.py"
+      - ".github/workflows/probe-bo3-20.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify 20 complete Map 1+2 series from one player
+        run: python3 probe_bo3_20.py
