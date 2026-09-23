@@ -1,0 +1,30 @@
+name: Check one BO3 match team shape
+on:
+  push:
+    paths:
+      - ".github/workflows/probe-match-teams.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check one recent chelo match
+        run: |
+          python3 - <<'PY'
+          from fetch_player_history import get, rows
+          matches=rows(get("/matches",{
+              "scope":"widget-matches","page[limit]":1,"sort":"-start_date",
+              "filter[matches.status][in]":"finished",
+              "filter[matches.player_ids][overlap]":"17729",
+              "filter[matches.discipline_id][eq]":1,"with":"teams,games"
+          }))
+          if not matches: raise SystemExit("No matches")
+          match=get("/matches/"+matches[0]["slug"],{"with":"teams,games"})
+          print("match keys:", sorted(match))
+          print("teams value:", repr(match.get("teams"))[:2500])
+          print("team1/team2:", repr({k:v for k,v in match.items() if "team" in k.lower() and k!="teams"})[:2500])
+          PY
