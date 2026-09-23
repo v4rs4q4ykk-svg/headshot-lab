@@ -68,8 +68,9 @@ def main():
             if "json" not in content_type.lower():
                 print("Unexpected Content-Type; no data accepted.")
                 return
-            body = response.read(4_000_001)
-            if len(body) > 4_000_000:
+            print("Reported Content-Length: " + str(response.headers.get("Content-Length", "unknown")))
+            body = response.read(32_000_001)
+            if len(body) > 32_000_000:
                 print("Response exceeded bounded size; no data accepted.")
                 return
             inspect(json.loads(body))
