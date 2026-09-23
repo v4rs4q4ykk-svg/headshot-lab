@@ -1,11 +1,11 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "kind": "on_demand_user_research_not_live",
   "bo3_player_id": 17729,
   "bo3_profile_id": "354",
   "nickname": "chelo",
   "source": "BO3.gg public per-game player stats (research access; reuse rights unverified)",
-  "retrieved_at": "2026-09-23T14:27:16.859444+00:00",
+  "retrieved_at": "2026-09-23T14:36:33.568705+00:00",
   "candidates_checked": 40,
   "excluded_checked": 6,
   "matches": [
@@ -13,6 +13,17 @@
       "id": 129902,
       "played_at": "2026-09-19T01:00:00.000+00:00",
       "team": "Imperial",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_mirage",
+          "rounds": 23
+        },
+        {
+          "name": "de_nuke",
+          "rounds": 15
+        }
+      ],
       "map1": 11,
       "map2": 9,
       "headshots": 20
@@ -21,6 +32,17 @@
       "id": 129885,
       "played_at": "2026-09-17T00:55:00.000+00:00",
       "team": "Imperial",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_mirage",
+          "rounds": 19
+        },
+        {
+          "name": "de_cache",
+          "rounds": 21
+        }
+      ],
       "map1": 9,
       "map2": 9,
       "headshots": 18
@@ -29,6 +51,17 @@
       "id": 127570,
       "played_at": "2026-09-06T15:00:00.000+00:00",
       "team": "Imperial",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_mirage",
+          "rounds": 23
+        },
+        {
+          "name": "de_nuke",
+          "rounds": 24
+        }
+      ],
       "map1": 10,
       "map2": 15,
       "headshots": 25
@@ -37,6 +70,17 @@
       "id": 127568,
       "played_at": "2026-09-05T19:00:00.000+00:00",
       "team": "Imperial",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_dust2",
+          "rounds": 29
+        },
+        {
+          "name": "de_cache",
+          "rounds": 21
+        }
+      ],
       "map1": 8,
       "map2": 11,
       "headshots": 19
@@ -45,6 +89,17 @@
       "id": 127564,
       "played_at": "2026-09-03T13:00:00.000+00:00",
       "team": "Imperial",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_mirage",
+          "rounds": 22
+        },
+        {
+          "name": "de_nuke",
+          "rounds": 18
+        }
+      ],
       "map1": 11,
       "map2": 7,
       "headshots": 18
@@ -53,6 +108,17 @@
       "id": 127761,
       "played_at": "2026-09-01T21:00:00.000+00:00",
       "team": "Imperial",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_anubis",
+          "rounds": 24
+        },
+        {
+          "name": "de_dust2",
+          "rounds": 22
+        }
+      ],
       "map1": 17,
       "map2": 4,
       "headshots": 21
@@ -61,6 +127,17 @@
       "id": 127760,
       "played_at": "2026-08-31T21:00:00.000+00:00",
       "team": "Imperial",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_dust2",
+          "rounds": 22
+        },
+        {
+          "name": "de_cache",
+          "rounds": 35
+        }
+      ],
       "map1": 9,
       "map2": 12,
       "headshots": 21
@@ -69,6 +146,17 @@
       "id": 127759,
       "played_at": "2026-08-30T21:00:00.000+00:00",
       "team": "Imperial",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_anubis",
+          "rounds": 17
+        },
+        {
+          "name": "de_inferno",
+          "rounds": 19
+        }
+      ],
       "map1": 9,
       "map2": 10,
       "headshots": 19
@@ -77,6 +165,17 @@
       "id": 127754,
       "played_at": "2026-08-28T21:10:00.000+00:00",
       "team": "Imperial",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_inferno",
+          "rounds": 17
+        },
+        {
+          "name": "de_cache",
+          "rounds": 20
+        }
+      ],
       "map1": 9,
       "map2": 12,
       "headshots": 21
@@ -85,6 +184,17 @@
       "id": 127744,
       "played_at": "2026-08-26T21:00:00.000+00:00",
       "team": "Imperial",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_dust2",
+          "rounds": 18
+        },
+        {
+          "name": "de_mirage",
+          "rounds": 22
+        }
+      ],
       "map1": 11,
       "map2": 9,
       "headshots": 20
@@ -93,6 +203,17 @@
       "id": 127732,
       "played_at": "2026-08-25T21:00:00.000+00:00",
       "team": "Imperial",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_mirage",
+          "rounds": 19
+        },
+        {
+          "name": "de_nuke",
+          "rounds": 16
+        }
+      ],
       "map1": 9,
       "map2": 5,
       "headshots": 14
@@ -101,6 +222,17 @@
       "id": 125928,
       "played_at": "2026-08-16T17:00:00.000+00:00",
       "team": "Gamdom Imperial",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_mirage",
+          "rounds": 28
+        },
+        {
+          "name": "de_inferno",
+          "rounds": 20
+        }
+      ],
       "map1": 12,
       "map2": 8,
       "headshots": 20
@@ -109,6 +241,17 @@
       "id": 127201,
       "played_at": "2026-08-15T20:15:00.000+00:00",
       "team": "Gamdom Imperial",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_nuke",
+          "rounds": 23
+        },
+        {
+          "name": "de_inferno",
+          "rounds": 22
+        }
+      ],
       "map1": 11,
       "map2": 3,
       "headshots": 14
@@ -117,6 +260,17 @@
       "id": 125922,
       "played_at": "2026-08-13T23:15:00.000+00:00",
       "team": "Gamdom Imperial",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_cache",
+          "rounds": 14
+        },
+        {
+          "name": "de_inferno",
+          "rounds": 17
+        }
+      ],
       "map1": 5,
       "map2": 6,
       "headshots": 11
@@ -125,6 +279,17 @@
       "id": 125908,
       "played_at": "2026-08-07T23:00:00.000+00:00",
       "team": "Imperial",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_nuke",
+          "rounds": 29
+        },
+        {
+          "name": "de_anubis",
+          "rounds": 23
+        }
+      ],
       "map1": 11,
       "map2": 15,
       "headshots": 26
@@ -133,6 +298,17 @@
       "id": 125899,
       "played_at": "2026-08-05T20:43:17.000+00:00",
       "team": "Imperial",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_dust2",
+          "rounds": 22
+        },
+        {
+          "name": "de_mirage",
+          "rounds": 15
+        }
+      ],
       "map1": 13,
       "map2": 5,
       "headshots": 18
@@ -141,6 +317,17 @@
       "id": 125891,
       "played_at": "2026-08-03T20:10:00.000+00:00",
       "team": "Imperial",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_mirage",
+          "rounds": 22
+        },
+        {
+          "name": "de_nuke",
+          "rounds": 16
+        }
+      ],
       "map1": 10,
       "map2": 8,
       "headshots": 18
@@ -149,6 +336,17 @@
       "id": 125187,
       "played_at": "2026-07-31T18:05:00.000+00:00",
       "team": "Imperial",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_dust2",
+          "rounds": 18
+        },
+        {
+          "name": "de_inferno",
+          "rounds": 22
+        }
+      ],
       "map1": 7,
       "map2": 7,
       "headshots": 14
@@ -157,6 +355,17 @@
       "id": 125185,
       "played_at": "2026-07-30T18:00:00.000+00:00",
       "team": "Imperial",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_mirage",
+          "rounds": 30
+        },
+        {
+          "name": "de_nuke",
+          "rounds": 22
+        }
+      ],
       "map1": 11,
       "map2": 10,
       "headshots": 21
@@ -165,6 +374,17 @@
       "id": 125181,
       "played_at": "2026-07-28T21:20:00.000+00:00",
       "team": "Imperial",
+      "opponent": null,
+      "maps": [
+        {
+          "name": "de_inferno",
+          "rounds": 17
+        },
+        {
+          "name": "de_dust2",
+          "rounds": 29
+        }
+      ],
       "map1": 6,
       "map2": 6,
       "headshots": 12
