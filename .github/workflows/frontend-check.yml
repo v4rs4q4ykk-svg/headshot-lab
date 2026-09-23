@@ -1,0 +1,30 @@
+name: Check CS2 research interface
+on:
+  push:
+    paths: ["app.js", "analysis.js", "style.css", "index.html", "tests/browser.cjs", "tests/test_analysis.cjs", ".github/workflows/frontend-check.yml"]
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify calculations
+        run: node --test tests/test_analysis.cjs
+      - name: Install browser test driver
+        run: npm install --no-save --no-package-lock playwright@1.63.0
+      - name: Check phone and desktop research flow
+        run: |
+          CS2_CHROME_BIN="$(command -v google-chrome || true)"
+          if [ -n "$CS2_CHROME_BIN" ]; then
+            export CS2_CHROME_BIN
+          else
+            npx playwright install --with-deps chromium
+          fi
+          node tests/browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: research-interface-check
+          path: test-results/
