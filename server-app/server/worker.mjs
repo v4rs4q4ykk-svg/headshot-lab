@@ -1,10 +1,12 @@
 import assets from './assets.js';
 import {Client,SourceError,search,historyBatch,matchup,positive} from './api.mjs';
+import {liveLines,attachPlayers} from './lines.mjs';
 const json=(body,status=200)=>new Response(JSON.stringify(body),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store'}});
 export default {async fetch(request,env,ctx){
  const u=new URL(request.url),p=u.pathname;
  if(!['GET','HEAD','POST'].includes(request.method))return json({message:'Method not allowed.'},405);
  try{
+  if(p==='/api/lines')return json(attachPlayers(await liveLines(),JSON.parse(assets['/data/bo3_players.json']).players,JSON.parse(assets['/data/research_catalog.json']).players));
   if(p==='/api/search')return json({players:await search(new Client({signal:request.signal}),u.searchParams.get('q'))});
   if(p==='/api/history'){
    const id=Number(u.searchParams.get('id')),offset=Number(u.searchParams.get('offset')||0);

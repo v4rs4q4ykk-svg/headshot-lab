@@ -5,7 +5,8 @@ const historyCache = {};
 let searchTimer, searchController, loadController;
 const state = {index: [], catalog: [], player: null, matches: [], fixtures: [], fixture: null, pendingTimer: null, loadSerial: 0};
 const storage = {get(k) {try {return JSON.parse(localStorage.getItem(k));} catch {return null;}}, set(k,v) {try {localStorage.setItem(k,JSON.stringify(v));} catch {}}, remove(k) {try {localStorage.removeItem(k);} catch {}}};
-const lines = storage.get('cs2-lines-v1') || {};
+let lineFeed=null,lineError='',lineLoading=false,boardRunning=false;
+const selectedOffers={},boardHistory=storage.get('cs2-board-history-v1')||{},boardFailures=new Map();
 const fmt = (n, digits=1) => typeof n === 'number' && Number.isFinite(n) ? n.toFixed(digits) : '—';
 const pct = n => fmt(n * 100, 1) + '%';
 const date = s => Number.isFinite(Date.parse(s)) ? new Date(s).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}) : 'Date unavailable';
@@ -14,7 +15,10 @@ function el(tag, text, cls) {const e = document.createElement(tag); if (text !==
 function option(value,text) {const o=el('option',text);o.value=String(value);return o;}
 function link(url,text,cls) {const a=el('a',text,cls);a.href=url;a.target='_blank';a.rel='noopener noreferrer';return a;}
 function button(text, action, cls='secondary') {const b=el('button',text,cls);b.type='button';b.addEventListener('click',action);return b;}
-function lineFor(pid) {const n=lines[pid];return typeof n==='number' && Number.isFinite(n) && n>=0 && n<=200 ? n : null;}
+function offersFor(pid){return activeOffers().filter(x=>x.bo3_player_id===pid);}
+function activeOffers(){return lineFeed&&Date.parse(lineFeed.expires_at)>Date.now()?lineFeed.lines.filter(x=>Date.parse(x.starts_at)>Date.now()):[];}
+function offerFor(pid){const offers=offersFor(pid);return offers.find(x=>x.id===selectedOffers[pid])||offers[0]||null;}
+function lineFor(pid) {return offerFor(pid)?.line??null;}
 function currentLine() {return state.player ? lineFor(state.player.bo3_player_id) : null;}
 async function json(path) {const r=await fetch('./'+path,{cache:'no-cache'});if(!r.ok){const e=Error(r.status===404?'No saved research yet':'Could not load data (HTTP '+r.status+')');e.status=r.status;throw e;}return r.json();}
 function table(headers, rows) {const t=el('table'),head=el('thead'),tr=el('tr');headers.forEach(h=>tr.append(el('th',h)));head.append(tr);t.append(head);const body=el('tbody');for(const row of rows){const r=el('tr');for(const v of row){const c=el('td');if(v instanceof Node)c.append(v);else c.textContent=String(v??'—');r.append(c);}body.append(r);}t.append(body);return t;}
@@ -35,16 +39,57 @@ function renderCatalog() {
   renderBoard();
 }
 function renderBoard() {
-  const sort=$('board-sort').value;
-  const rows=state.catalog.map(p=>{const totals=p.recent_totals||[],xs=totals.slice(0,10),line=lineFor(p.id),eligible=totals.slice(0,20);return {...p,line,average:xs.length===10?CS2.avg(xs):null,rate:line!==null&&eligible.length>=10?eligible.filter(x=>x>line).length/eligible.length:null,rateN:eligible.length};});
-  rows.sort((a,b)=>(sort==='average'?(b.average??-1)-(a.average??-1):sort==='over'?(b.rate??-1)-(a.rate??-1):b.series-a.series)||a.name.localeCompare(b.name));
-  const rendered=rows.slice(0,40).map(p=>{
-    const name=el('div');name.append(button(p.name,()=>loadPlayer(p.id,p.name),'board-name'),el('span',p.full_player_scan?'Player researched':'Partial match coverage','team-cell'));
-    const input=el('input');input.type='number';input.min='0';input.max='200';input.step='.5';input.className='board-line';input.placeholder='Line';input.value=p.line??'';input.setAttribute('aria-label',p.name+' projection line');
-    input.addEventListener('change',()=>{const n=Number(input.value);if(input.value.trim()&&Number.isFinite(n)&&n>=0&&n<=200)lines[p.id]=n;else delete lines[p.id];storage.set('cs2-lines-v1',lines);renderBoard();if(state.player?.bo3_player_id===p.id){$('projection').value=lineFor(p.id)??'';renderPlayerData();}});
-    return [name,p.series,fmt(p.average),input,p.rate===null?'—':pct(p.rate)+' ('+p.rateN+')'];
+  const n=Number($('board-sort').value);
+  const rows=activeOffers().map(p=>{const d=boardHistory[p.bo3_player_id]||historyCache[p.bo3_player_id],xs=d?.coverage?.full_player_scan?CS2.records(d).slice(0,n):[];return {...p,data:d,xs,rate:xs.length===n?xs.filter(x=>x.headshots>p.line).length/n:null};});
+  rows.sort((a,b)=>(b.rate??-1)-(a.rate??-1)||a.name.localeCompare(b.name)||a.starts_at.localeCompare(b.starts_at));
+  let rank=0,lastRate=null,position=0;
+  const rendered=rows.map(p=>{
+    const name=el('div');name.append(p.bo3_player_id?button(p.name,()=>{selectedOffers[p.bo3_player_id]=p.id;loadPlayer(p.bo3_player_id,p.name);$('player-view').scrollIntoView({behavior:'smooth'});},'board-name'):el('strong',p.name),el('span',p.team+' vs '+p.opponent+' · '+when(p.starts_at),'team-cell'));
+    const status=!p.bo3_player_id?'Identity not matched':boardFailures.has(p.bo3_player_id)?'History unavailable — retry refresh':p.data?.coverage?.full_player_scan?p.xs.length+' / '+n+' series · checked '+when(p.data.retrieved_at):'Loading history…';
+    if(p.rate!==null){position++;if(p.rate!==lastRate)rank=position;lastRate=p.rate;}
+    return [p.rate===null?'—':rank,name,fmt(p.line),p.rate===null?'—':pct(p.rate)+' · '+p.xs.filter(x=>x.headshots>p.line).length+'/'+n,p.rate===null?'—':fmt(CS2.avg(p.xs.map(x=>x.headshots))),status];
   });
-  $('board-table').replaceChildren(rendered.length?table(['Player','Series','L10 avg','Your line','Over rate (n)'],rendered):el('p','Saved players appear here after collection.','empty'));
+  const ranked=rows.filter(p=>p.rate!==null).length;
+  $('board-status').textContent=lineError||(!lineFeed?'Loading current PrizePicks lines…':Date.parse(lineFeed.expires_at)<=Date.now()?'Lines expired. Refreshing is required before comparisons can resume.':rows.length+' current lines · '+ranked+' ranked with '+n+' series · checked '+when(lineFeed.retrieved_at)+(lineFeed.complete?'':' · source coverage may be incomplete'));
+  $('board-table').replaceChildren(rendered.length?table(['Rank','Player / matchup','Line','Over rate','Avg HS','History'],rendered):el('p',lineLoading?'Fetching current lines…':'No current standard Maps 1–2 headshot lines are available.','empty'));
+}
+function renderLine(){
+ if(!state.player)return;const id=state.player.bo3_player_id,offers=offersFor(id),selected=offerFor(id),sel=$('projection');sel.replaceChildren();
+ for(const p of offers)sel.append(option(p.id,p.line+' HS · vs '+p.opponent+' · '+when(p.starts_at)));
+ if(selected){sel.value=selected.id;$('line-status').textContent='Maps 1–2 headshots · standard line · checked '+when(lineFeed.retrieved_at);}
+ else{sel.append(option('',lineLoading?'Loading line…':'No current line'));$('line-status').textContent=lineError||'No matching current standard line is available for this player.';}
+ sel.disabled=!offers.length;
+}
+async function refreshLines(){
+ if(lineLoading)return;lineLoading=true;renderLine();
+ try{const r=await fetch('./api/lines',{cache:'no-store'}),x=await r.json();if(!r.ok)throw Error(x.message||'Current lines are unavailable.');lineFeed=x;lineError='';boardFailures.clear();}
+ catch(e){lineError=e.message;lineFeed=null;}
+ finally{lineLoading=false;renderLine();renderBoard();renderPlayerData();}
+ if(lineFeed)hydrateBoard();
+}
+async function hydrateBoard(){
+ if(boardRunning)return;boardRunning=true;
+ // Resolve names absent from the saved index against the current stats source.
+ const unresolved=[...new Set(activeOffers().filter(x=>!x.bo3_player_id).map(x=>x.name))];
+ async function resolve(){while(unresolved.length){const name=unresolved.shift();try{const x=await json('api/search?q='+encodeURIComponent(name)),exact=(x.players||[]).filter(p=>p.name.toLowerCase()===name.toLowerCase());if(exact.length===1)for(const p of activeOffers())if(p.name===name&&!p.bo3_player_id)p.bo3_player_id=exact[0].id;}catch{}}}
+ await Promise.all([resolve(),resolve()]);
+ const work=[...new Map(activeOffers().filter(x=>x.bo3_player_id).map(x=>[x.bo3_player_id,x])).values()];
+ await Promise.all(work.map(async p=>{const id=p.bo3_player_id;if(boardHistory[id]||historyCache[id])return;try{const d=storage.get('cs2-history-'+id)||await json('data/player_histories/'+id+'.json');if(d.bo3_player_id===id&&d.coverage?.full_player_scan)boardHistory[id]=d;}catch{}}));
+ renderBoard();renderLine();renderPlayerData();
+ async function next(){while(work.length){const p=work.shift(),id=p.bo3_player_id;if(!offersFor(id).length)continue;
+  let saved=boardHistory[id]||historyCache[id]||storage.get('cs2-history-'+id);
+  if(!saved){try{saved=await json('data/player_histories/'+id+'.json');}catch{}}
+  if(saved?.bo3_player_id===id&&saved.coverage?.full_player_scan){boardHistory[id]=saved;renderBoard();if(Date.now()-Date.parse(saved.retrieved_at)<15*60000)continue;}
+  // A retry happens on refresh, not in a tight loop against a busy source.
+  if(boardFailures.has(id))continue;
+  const data={schema_version:3,bo3_player_id:id,nickname:p.name,player:{id,name:p.name},matches:[],coverage:{full_player_scan:false,loading:true},retrieved_at:new Date().toISOString()};
+  try{let offset=0;do{const batch=await streamPage(id,offset,()=>{});for(const m of batch.matches)if(!data.matches.some(x=>x.id===m.id))data.matches.push(m);data.player=batch.player||data.player;offset=batch.next_offset;}while(offset!==null&&data.matches.length<20);
+   data.matches.sort((a,b)=>b.played_at.localeCompare(a.played_at));data.matches=data.matches.slice(0,20);data.coverage={full_player_scan:true,loading:false};data.retrieved_at=new Date().toISOString();boardHistory[id]=data;historyCache[id]=data;
+   const saved=Object.fromEntries(Object.entries(boardHistory).sort((a,b)=>Date.parse(b[1].retrieved_at)-Date.parse(a[1].retrieved_at)).slice(0,80));storage.set('cs2-board-history-v1',saved);
+  }catch(e){boardFailures.set(id,e.message);}
+  renderBoard();
+ }}
+ try{await Promise.all([next(),next()]);}finally{boardRunning=false;}
 }
 function remember(data) {
   historyCache[data.bo3_player_id]=data;
@@ -58,7 +103,7 @@ function showPlayer(data,keepFilters=false) {
   state.player=data;state.matches=CS2.records(data);
   $('player-view').hidden=false;$('player-name').textContent=data.nickname;$('player-team').textContent=state.matches[0]?.team||'CS2 player';
   $('player-meta').textContent='Source ID '+data.bo3_player_id+' · updated '+when(data.retrieved_at);
-  $('projection').value=lineFor(data.bo3_player_id)??'';
+  renderLine();
   const params=new URLSearchParams(location.search);params.set('player',data.bo3_player_id);history.replaceState(null,'','?'+params.toString());
   setupFixtures();setupOpponents();setupScenario();
   if(keepFilters){if([...$('fixture-select').options].some(x=>x.value===fixture)){ $('fixture-select').value=fixture;state.fixture=state.fixtures.find(f=>String(f.id)===fixture)||null;}if([...$('opponent-select').options].some(x=>x.value===opponent))$('opponent-select').value=opponent;}
@@ -77,7 +122,7 @@ async function loadPlayer(id,name,force=false) {
   searchController?.abort();clearTimeout(searchTimer);loadController?.abort();loadController=new AbortController();const signal=loadController.signal,serial=++state.loadSerial;
   $('search-results').replaceChildren();$('player-search').value=name||'';$('player-view').hidden=true;
   loadNotice('Loading '+(name||'player')+'’s headshots…');
-  let saved=historyCache[id]||storage.get('cs2-history-'+id);
+  let saved=historyCache[id]||boardHistory[id]||storage.get('cs2-history-'+id);
   if(saved?.bo3_player_id!==id||!saved?.matches?.length)saved=null;
   if(!saved){try{const d=await json('data/player_histories/'+id+'.json');if(d.bo3_player_id===id&&CS2.records(d).length)saved=d;}catch{}}
   if(serial!==state.loadSerial)return;
@@ -183,8 +228,8 @@ function renderScenario() {const a=$('scenario-one').value,b=$('scenario-two').v
 function renderPlayerData(){if(!state.player)return;renderWindows();renderForecast();renderHistory();renderScenario();}
 $('player-search').addEventListener('input',searchChanged);
 $('player-search').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();clearTimeout(searchTimer);const q=$('player-search').value.trim(),exact=allPeople().filter(p=>p.name.toLowerCase()===q.toLowerCase());if(exact.length===1)loadPlayer(exact[0].id,exact[0].name);else sourceSearch(q,true);}});
-$('projection').addEventListener('input',()=>{if(!state.player)return;const n=Number($('projection').value);if($('projection').value.trim()&&Number.isFinite(n)&&n>=0&&n<=200)lines[state.player.bo3_player_id]=n;else delete lines[state.player.bo3_player_id];storage.set('cs2-lines-v1',lines);renderPlayerData();renderBoard();});
-$('clear-line').addEventListener('click',()=>{if(!state.player)return;delete lines[state.player.bo3_player_id];$('projection').value='';storage.set('cs2-lines-v1',lines);renderPlayerData();renderBoard();});
+$('projection').addEventListener('change',()=>{if(state.player){selectedOffers[state.player.bo3_player_id]=$('projection').value;renderPlayerData();}});
+$('refresh-lines').addEventListener('click',refreshLines);
 $('refresh-player').addEventListener('click',()=>state.player&&loadPlayer(state.player.bo3_player_id,state.player.nickname,true));
 $('fixture-select').addEventListener('change',()=>{state.fixture=state.fixtures.find(f=>String(f.id)===$('fixture-select').value)||null;syncOpponent();renderForecast();renderHistory();});
 $('opponent-select').addEventListener('change',renderHistory);$('date-range').addEventListener('change',renderHistory);
@@ -194,6 +239,9 @@ $('scenario-one').addEventListener('change',renderScenario);$('scenario-two').ad
   if(results[0].status==='fulfilled')state.index=(results[0].value.players||[]).filter(p=>Number.isSafeInteger(p.id)&&p.id>0&&typeof p.name==='string');
   if(results[1].status==='fulfilled')state.catalog=results[1].value.players||[];
   renderCatalog();
+  refreshLines();
+  setInterval(refreshLines,60000);
+  setInterval(()=>{renderLine();renderBoard();renderPlayerData();},15000);
   if(!state.index.length&&!state.catalog.length)$('catalog-status').textContent='Type a nickname to search the stats source directly.';
   storage.remove('cs2-pending');
   {const id=Number(new URLSearchParams(location.search).get('player'));const person=allPeople().find(p=>p.id===id);if(person)loadPlayer(id,person.name);}

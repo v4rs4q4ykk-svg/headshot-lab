@@ -27,7 +27,7 @@
   <section id="request-panel" class="panel" hidden aria-live="polite"></section>
   <section id="player-view" hidden>
     <div class="profile-head"><div><div id="player-team" class="eyebrow"></div><h2 id="player-name"></h2><p id="player-meta" class="small muted"></p></div><button id="refresh-player" class="secondary" type="button">Refresh research</button></div>
-    <div class="line-panel panel"><div><label for="projection">Your PrizePicks line</label><p class="small muted">Enter the current Maps 1–2 headshot line. Saved only on this device.</p></div><input id="projection" type="number" min="0" max="200" step="0.5" inputmode="decimal" placeholder="e.g. 17.5"><button id="clear-line" type="button" class="text-button">Clear</button></div>
+    <div class="line-panel panel"><div><label for="projection">Current PrizePicks line</label><p id="line-status" class="small muted">Loading the current Maps 1–2 headshot line…</p></div><select id="projection" aria-label="Current PrizePicks matchup and line"></select></div>
     <div id="window-stats" class="metric-grid"></div>
     <p id="coverage-note" class="small muted"></p>
     <section class="panel">
@@ -42,18 +42,19 @@
       <div class="filter-grid"><div><label for="opponent-select" class="small muted">Opponent</label><select id="opponent-select"></select></div><div><label for="date-range" class="small muted">History range</label><select id="date-range"><option value="all">All saved dates</option><option value="180">Last 180 days</option><option value="90">Last 90 days</option><option value="30">Last 30 days</option></select></div></div>
       <div id="opponent-summary"></div>
       <div id="history-chart" aria-label="Headshots per saved series"></div>
-      <p class="small muted">Green is above your line; red is below; gold is a push. The table below contains the exact values.</p>
+      <p class="small muted">Green is above the current line; red is below; gold is a push. The table below contains the exact values.</p>
       <h4>Map performance in this selection</h4><div id="map-table" class="table-wrap"></div>
       <details><summary>Test a different map combination</summary><div class="filter-grid"><select id="scenario-one" aria-label="Scenario map one"></select><select id="scenario-two" aria-label="Scenario map two"></select></div><div id="scenario-output" class="small muted"></div></details>
       <h4>Match history</h4><div id="history-table" class="table-wrap"></div>
     </section>
   </section>
   <section id="leaderboard" class="panel">
-    <div class="section-head"><div><div class="eyebrow">COLLECTED PLAYERS</div><h3>Research board</h3></div><select id="board-sort" aria-label="Sort research board"><option value="coverage">Most history</option><option value="average">L10 average</option><option value="over">Over rate</option></select></div>
-    <p class="small muted">Enter each player’s own line to compare historical over rates. Averages need ten saved series. Some players have only the matches collected alongside another player.</p>
+    <div class="section-head"><div><div class="eyebrow">LIVE LINES · MAPS 1 + 2</div><h3>Who’s clearing their line?</h3></div><select id="board-sort" aria-label="Leaderboard history window"><option value="10">Last 10 series</option><option value="15">Last 15 series</option><option value="20">Last 20 series</option></select></div>
+    <p class="small muted">Ranked by the share of past series above each player’s current standard PrizePicks line. These are comparisons with today’s line, not historical bet results. Pushes count in the sample, not as overs. Full player histories load automatically.</p>
+    <p id="board-status" class="small muted" aria-live="polite">Loading current lines…</p><button id="refresh-lines" type="button" class="secondary">Refresh lines</button>
     <div id="board-table" class="table-wrap"></div>
   </section>
-  <details class="panel"><summary>Data coverage &amp; refresh</summary><div id="source-notes"><p>History comes from BO3.gg’s public completed-match records. A series is counted only when the same source player ID has valid integer headshots on completed Maps 1 and 2. Missing statistics stay missing.</p><p>Selecting a player loads their stats automatically. Saved history opens first while older or incomplete history updates. A first search fetches records from the source, so loading time depends on its response. Completed match records are cached for repeat searches. Missing records are excluded, never filled with estimates.</p><p>PrizePicks lines are entered manually. There is no real-time headshot or automated PrizePicks feed. Model estimates and historical hit rates do not guarantee outcomes.</p></div></details>
+  <details class="panel"><summary>Data coverage &amp; refresh</summary><div id="source-notes"><p>History comes from BO3.gg’s public completed-match records. A series is counted only when the same source player ID has valid integer headshots on completed Maps 1 and 2. Missing statistics stay missing.</p><p>Selecting a player loads their stats automatically. Saved history opens first while older or incomplete history updates. A first search fetches records from the source, so loading time depends on its response. Completed match records are cached for repeat searches. Missing records are excluded, never filled with estimates.</p><p>Current standard pre-game Maps 1–2 headshot lines come from PrizePicks’ public projection feed and refresh every minute while this page is open. Promotions, alternate odds and live markets are excluded. Started matches and expired lines are removed. The feed can be incomplete or unavailable; confirm the line in PrizePicks before entering. Player identities that cannot be matched uniquely remain unranked. Model estimates and historical hit rates do not guarantee outcomes.</p></div></details>
 </main>
 <footer>Headshot Lab · CS2 only · <a href="https://github.com/v4rs4q4ykk-svg/headshot-lab">Source &amp; method</a></footer>
 </body>

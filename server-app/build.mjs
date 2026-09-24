@@ -6,4 +6,5 @@ function walk(dir,prefix=''){for(const f of readdirSync(dir,{withFileTypes:true}
 walk('public');
 writeFileSync('dist/server/assets.js','export default '+JSON.stringify(assets)+';\n');
 copyFileSync('server/api.mjs','dist/server/api.mjs');copyFileSync('server/worker.mjs','dist/server/index.js');
+copyFileSync('server/lines.mjs','dist/server/lines.mjs');
 console.log('Built worker and '+Object.keys(assets).length+' local assets.');
