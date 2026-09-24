@@ -69,12 +69,14 @@ async function refreshLines(){
 }
 async function hydrateBoard(){
  if(boardRunning)return;boardRunning=true;
+ async function preload(offers){await Promise.all(offers.map(async p=>{const id=p.bo3_player_id;if(!id||boardHistory[id]||historyCache[id])return;try{const d=storage.get('cs2-history-'+id)||await json('data/player_histories/'+id+'.json');if(d.bo3_player_id===id&&d.coverage?.full_player_scan)boardHistory[id]=d;}catch{}}));renderBoard();}
+ await preload(activeOffers());
  // Resolve names absent from the saved index against the current stats source.
  const unresolved=[...new Set(activeOffers().filter(x=>!x.bo3_player_id).map(x=>x.name))];
  async function resolve(){while(unresolved.length){const name=unresolved.shift();try{const x=await json('api/search?q='+encodeURIComponent(name)),exact=(x.players||[]).filter(p=>p.name.toLowerCase()===name.toLowerCase());if(exact.length===1)for(const p of activeOffers())if(p.name===name&&!p.bo3_player_id)p.bo3_player_id=exact[0].id;}catch{}}}
  await Promise.all([resolve(),resolve()]);
  const work=[...new Map(activeOffers().filter(x=>x.bo3_player_id).map(x=>[x.bo3_player_id,x])).values()];
- await Promise.all(work.map(async p=>{const id=p.bo3_player_id;if(boardHistory[id]||historyCache[id])return;try{const d=storage.get('cs2-history-'+id)||await json('data/player_histories/'+id+'.json');if(d.bo3_player_id===id&&d.coverage?.full_player_scan)boardHistory[id]=d;}catch{}}));
+ await preload(work);
  renderBoard();renderLine();renderPlayerData();
  async function next(){while(work.length){const p=work.shift(),id=p.bo3_player_id;if(!offersFor(id).length)continue;
   let saved=boardHistory[id]||historyCache[id]||storage.get('cs2-history-'+id);
@@ -93,6 +95,7 @@ async function hydrateBoard(){
 }
 function remember(data) {
   historyCache[data.bo3_player_id]=data;
+  if(data.coverage?.full_player_scan)boardHistory[data.bo3_player_id]=data;
   const ids=(storage.get('cs2-history-ids')||[]).filter(x=>x!==data.bo3_player_id);ids.unshift(data.bo3_player_id);
   ids.slice(20).forEach(id=>storage.remove('cs2-history-'+id));storage.set('cs2-history-ids',ids.slice(0,20));storage.set('cs2-history-'+data.bo3_player_id,data);
   const row={id:data.bo3_player_id,name:data.nickname,team:data.matches[0]?.team,team_id:data.player?.team_id,series:data.matches.length,full_player_scan:data.coverage?.full_player_scan,recent_totals:data.matches.slice(0,20).map(m=>m.headshots)};
