@@ -16,7 +16,7 @@ jobs:
       - name: Check source identity and calculations
         run: |
           node --test tests/api.test.mjs tests/lines.test.mjs
-          node --test tests/test_analysis.cjs
+          node --test tests/test_analysis.cjs tests/wildcards.test.cjs
       - name: Build server with existing saved history
         run: |
           cp -r ../data public/data
@@ -31,6 +31,7 @@ jobs:
           else
             npx playwright install --with-deps chromium
           fi
+          node tests/wildcards-browser.cjs
           node tests/board-browser.cjs
           node tests/browser.cjs
       - uses: actions/upload-artifact@v4

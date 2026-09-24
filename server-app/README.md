@@ -13,6 +13,17 @@ they are automatic but not guaranteed to be instantaneous. Rate limits, missing
 records and unavailable sources are shown as errors or partial coverage.
 
 No source keys, GitHub tokens, payment information or paid data plan is required.
+
+Wildcards is an explainable eight-check screen, not a calibrated win probability.
+It requires fresh complete history, strong L10 form, median and L5 consistency,
+support from L15/L20, exact upcoming fixture matching, at least three recent
+opponent meetings, sufficient map samples and a positive map baseline margin,
+and recent team continuity. Missing evidence never counts as support. Qualifying
+players and incomplete candidates are shown separately with every check,
+threshold, sample size, map assumption and match source. Team schedule/map data
+loads automatically for strong recent-form candidates, at most two requests at
+once, and refreshes after five minutes. Role/roster news is not modeled.
+`node --test tests/wildcards.test.cjs` checks qualification and rejection cases.
 PrizePicks standard pre-game Maps 1–2 headshot lines load automatically from
 the public projection feed, refresh every minute, and expire after 90 seconds.
 Started games, alternate odds, promotions and other markets are excluded. An

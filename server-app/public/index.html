@@ -7,12 +7,13 @@
   <meta name="description" content="CS2 headshot research: match history, opponent results, map veto estimates and projection comparisons.">
   <title>Headshot Lab · CS2 Research</title>
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./style.css?v=lines-1">
+  <link rel="stylesheet" href="./style.css?v=wildcards-1">
   <script src="./analysis.js" defer></script>
-  <script src="./app.js?v=lines-1" defer></script>
+  <script src="./wildcards.js" defer></script>
+  <script src="./app.js?v=wildcards-1" defer></script>
 </head>
 <body>
-<header class="site-header"><a href="./" class="brand">HEADSHOT<span>LAB</span><small>CS2 RESEARCH</small></a><a href="#leaderboard" class="quiet-link">Player board ↗</a></header>
+<header class="site-header"><a href="./" class="brand">HEADSHOT<span>LAB</span><small>CS2 RESEARCH</small></a><nav><a href="#wildcards" class="quiet-link">Wildcards ↗</a> · <a href="#leaderboard" class="quiet-link">Player board ↗</a></nav></header>
 <main>
   <section class="search-panel">
     <div class="eyebrow">MAPS 1 + 2 · HEADSHOTS</div>
@@ -23,6 +24,14 @@
     <div id="search-results" aria-live="polite"></div>
     <div id="quick-players" class="chips"></div>
     <p id="catalog-status" class="small muted">Loading player coverage…</p>
+  </section>
+  <section id="wildcards" class="panel">
+    <div class="section-head"><div><div class="eyebrow">WHEN THE EVIDENCE AGREES</div><h3>Wildcards</h3></div><span class="pill">OVER SCREEN</span></div>
+    <p class="small muted">Current lines, recent form, opponent meetings and map choices checked together. A Wildcard must pass every check below. These screening rules have not been backtested as a betting strategy.</p>
+    <p id="wildcard-status" class="small muted" aria-live="polite">Waiting for current lines and player histories…</p>
+    <div id="wildcard-list"></div>
+    <details id="wildcard-watch"><summary>Promising form · evidence still missing or mixed</summary><div id="wildcard-watch-list"></div></details>
+    <details class="method"><summary>Qualification rules &amp; what is not measured</summary><p>Requires a fresh full history with ten recent series; at least 7/10 above the current line; the ten-series average, median and last-five average above the line; at least 60% overs in the last 15 or 20; a verified upcoming BO3 matchup; three recent meetings against that opponent with at least two-thirds overs; and a map-weighted baseline above the line by at least 1 HS or 10%, whichever is larger. Map samples must cover at least 80% of predicted map weight, with at least three samples on each of the two most likely maps. The last five series must be on the current team.</p><p>Qualified players sort by last-ten over rate, then the map baseline’s margin above the line. Pending candidates sort by passed checks first. Checks overlap and are not independent probabilities. Past results are compared with today’s line, not past betting lines. Roster news, role changes, health, travel, server conditions and market movement are not verified. Predicted maps can change; match length and overtime can change headshot totals. No player is guaranteed to go over.</p></details>
   </section>
   <section id="request-panel" class="panel" hidden aria-live="polite"></section>
   <section id="player-view" hidden>

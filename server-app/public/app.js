@@ -7,6 +7,8 @@ const state = {index: [], catalog: [], player: null, matches: [], fixtures: [], 
 const storage = {get(k) {try {return JSON.parse(localStorage.getItem(k));} catch {return null;}}, set(k,v) {try {localStorage.setItem(k,JSON.stringify(v));} catch {}}, remove(k) {try {localStorage.removeItem(k);} catch {}}};
 let lineFeed=null,lineError='',lineLoading=false,boardRunning=false;
 const selectedOffers={},boardHistory=storage.get('cs2-board-history-v1')||{},boardFailures=new Map();
+const wildcardMetadata=new Map(),wildcardPending=new Set();
+let wildcardActive=0;
 const fmt = (n, digits=1) => typeof n === 'number' && Number.isFinite(n) ? n.toFixed(digits) : '—';
 const pct = n => fmt(n * 100, 1) + '%';
 const date = s => Number.isFinite(Date.parse(s)) ? new Date(s).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}) : 'Date unavailable';
@@ -52,6 +54,42 @@ function renderBoard() {
   const ranked=rows.filter(p=>p.rate!==null).length;
   $('board-status').textContent=lineError||(!lineFeed?'Loading current PrizePicks lines…':Date.parse(lineFeed.expires_at)<=Date.now()?'Lines expired. Refreshing is required before comparisons can resume.':rows.length+' current lines · '+ranked+' ranked with '+n+' series · checked '+when(lineFeed.retrieved_at)+(lineFeed.complete?'':' · source coverage may be incomplete'));
   $('board-table').replaceChildren(rendered.length?table(['Rank','Player / matchup','Line','Over rate','Avg HS','History'],rendered):el('p',lineLoading?'Fetching current lines…':'No current standard Maps 1–2 headshot lines are available.','empty'));
+  renderWildcards();queueWildcardMetadata();
+}
+function wildcardRows(){return activeOffers().map(p=>{const d=boardHistory[p.bo3_player_id]||historyCache[p.bo3_player_id],tid=d?.player?.team_id||d?.matches?.[0]?.team_id;return Wildcards.evaluate(p,d,wildcardMetadata.get(tid));}).sort(Wildcards.compare);}
+function wildcardCard(result){
+ const p=result.offer,card=el('article',undefined,'wildcard-card'),head=el('div',undefined,'section-head');
+ head.append(el('h4',p.name+' · Over '+p.line+' HS'),el('span',result.qualified?'ALL '+result.checks.length+' CHECKS PASS':result.support+'/'+result.checks.length+' SUPPORT','pill'));card.append(head,el('p',p.team+' vs '+p.opponent+' · '+when(p.starts_at),'small muted'));
+ card.append(el('p',result.summary.over+'/10 overs · '+fmt(result.summary.mean)+' average · '+fmt(result.median)+' median'+(result.effect?' · '+fmt(result.effect.baseline)+' map baseline':''),'wildcard-summary'));
+ const reasons=el('ul',undefined,'wildcard-reasons');
+ for(const c of result.checks){const li=el('li',undefined,c.status);li.append(el('strong',(c.status==='support'?'Supports over':c.status==='against'?'Conflicts':'Missing evidence')+' — '+c.title),el('p',c.reason));reasons.append(li);}card.append(reasons);
+ const details=el('details');details.append(el('summary','Numbers, map choices & source records'));
+ const windows=CS2.windows(CS2.records(boardHistory[p.bo3_player_id]||historyCache[p.bo3_player_id]||{}),p.line),wrap=el('div',undefined,'table-wrap');wrap.append(table(['Window','Average','Over / under / push'],windows.map(w=>['Last '+w.window,w.complete?fmt(w.mean):w.n+'/'+w.window+' saved',w.complete?w.over+' / '+w.under+' / '+w.push:'Incomplete'])));details.append(wrap);
+ if(result.effect){const maps=el('div',undefined,'table-wrap');maps.append(table(['Map','In Maps 1–2','Player samples','HS / round','Expected rounds','Baseline HS'],result.effect.pieces.filter(x=>x.inclusion>0).sort((a,b)=>b.inclusion-a.inclusion).map(x=>[CS2.mapName(x.map),pct(x.inclusion),x.sample,fmt(x.rate,3),fmt(x.rounds),fmt(x.hs)])));details.append(maps,el('p','Map inclusion is from the veto model, not the chance of going over. HS/round is adjusted toward the player’s overall rate for small samples. Expected rounds use recent team map lengths when enough exist, otherwise the player’s history.','small muted'));
+  if(result.prediction?.pairs?.length){const pair=result.prediction.pairs[0];details.append(el('p',(result.prediction.confirmed?'Confirmed ordered maps: ':'Most likely ordered pair: ')+CS2.mapName(pair.map1)+' + '+CS2.mapName(pair.map2)+(result.prediction.confirmed?'':' · '+pct(pair.probability)+' model weight'),'small muted'));}}
+ const history=el('ol',undefined,'small');for(const m of result.matches){const li=el('li');li.append(/^[a-zA-Z0-9_-]+$/.test(m.slug||'')?link('https://bo3.gg/matches/'+m.slug,date(m.played_at)):el('span',date(m.played_at)),document.createTextNode(' · vs '+m.opponent?.name+' · '+m.headshots+' HS · '+(m.headshots>p.line?'over':m.headshots<p.line?'under':'push')));history.append(li);}details.append(history);
+ if(result.fixture?.slug&&/^[a-zA-Z0-9_-]+$/.test(result.fixture.slug))details.append(link('https://bo3.gg/matches/'+result.fixture.slug,'Upcoming match source ↗'));
+ details.append(el('p','Line checked '+when(lineFeed?.retrieved_at)+'; last source line change '+when(p.updated_at)+'. Future role, roster and round-count changes remain unknown.','small muted'));card.append(details,button('Open full player research',()=>{selectedOffers[p.bo3_player_id]=p.id;loadPlayer(p.bo3_player_id,p.name);$('player-view').scrollIntoView({behavior:'smooth'});}));return card;
+}
+function renderWildcards(){
+ const rows=wildcardRows(),qualified=rows.filter(x=>x.qualified),watch=rows.filter(x=>x.candidate&&!x.qualified),ready=rows.filter(x=>x.matches.length>=10).length;
+ $('wildcard-status').textContent=!rows.length?(lineError||'Waiting for current lines…'):qualified.length+' Wildcards · '+ready+'/'+rows.length+' offers have ten-series history · '+watch.length+' candidates with missing or conflicting evidence'+(wildcardActive?' · checking matchups…':'');
+ const root=$('wildcard-list'),watchRoot=$('wildcard-watch-list');
+ // Preserve opened explanations when background data refreshes.
+ const opened=new Set([...document.querySelectorAll('.wildcard-card')].filter(x=>x.querySelector('details')?.open).map(x=>x.dataset.offer));
+ const card=x=>{const c=wildcardCard(x);c.dataset.offer=x.offer.id;if(opened.has(x.offer.id))c.querySelector('details').open=true;return c;};
+ root.replaceChildren(...(qualified.length?qualified.map(card):[el('p','No player has passed every check yet. The watchlist shows what is supporting an over and what still prevents qualification.','empty')]));
+ watchRoot.replaceChildren(...watch.map(card));$('wildcard-watch').hidden=!watch.length;
+}
+function queueWildcardMetadata(){
+ for(const row of wildcardRows().filter(x=>x.candidate)){
+  if(wildcardActive>=2)break;
+  const d=boardHistory[row.offer.bo3_player_id]||historyCache[row.offer.bo3_player_id],latest=d?.matches?.[0],tid=d?.player?.team_id||latest?.team_id;
+  if(!latest||!tid||wildcardPending.has(tid))continue;
+  const previous=wildcardMetadata.get(tid);if(previous&&Date.now()-Date.parse(previous.retrieved_at)<(previous.error?60000:5*60000))continue;
+  wildcardActive++;wildcardPending.add(tid);
+  (async()=>{try{const r=await fetch('./api/matchup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({team_id:tid,recent:{team_id:latest.team_id,team:latest.team,opponent:latest.opponent}})});const x=await r.json();if(!r.ok)throw Error(x.message||'Matchup unavailable');wildcardMetadata.set(tid,{...x,retrieved_at:new Date().toISOString()});}catch(e){wildcardMetadata.set(tid,{error:e.message,retrieved_at:new Date().toISOString(),upcoming:[],team_profiles:{}});}finally{wildcardActive--;wildcardPending.delete(tid);renderWildcards();queueWildcardMetadata();}})();
+ }
 }
 function renderLine(){
  if(!state.player)return;const id=state.player.bo3_player_id,offers=offersFor(id),selected=offerFor(id),sel=$('projection');sel.replaceChildren();
